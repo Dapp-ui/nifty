@@ -19,26 +19,31 @@ class Nifty {
   private network: Network;
   private signer: ethers.providers.JsonRpcSigner = null;
   private contract: ethers.Contract;
+  private provider: ethers.providers.Web3Provider;
 
   constructor(network: Network, contractAddress: string) {
-    this.contractAddress = contractAddress;
-    this.network = network;
-  }
-
-  public async connectWallet(): Promise<string> {
     if (!window.ethereum) {
       throw new Error('No Metamask has been installed');
     }
+    this.contractAddress = contractAddress;
+    this.network = network;
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    this.provider = new ethers.providers.Web3Provider(window.ethereum);
+    this.contract = new ethers.Contract(
+      this.contractAddress,
+      abi,
+      this.provider
+    );
+  }
 
-    await provider.send('wallet_switchEthereumChain', [
+  public async connectWallet(): Promise<string> {
+    await this.provider.send('wallet_switchEthereumChain', [
       { chainId: chainIdFromNetwork(this.network) },
     ]);
 
-    await provider.send('eth_requestAccounts', []);
+    await this.provider.send('eth_requestAccounts', []);
 
-    this.signer = provider.getSigner();
+    this.signer = this.provider.getSigner();
 
     this.contract = new ethers.Contract(this.contractAddress, abi, this.signer);
 
@@ -49,13 +54,31 @@ class Nifty {
     return await this.signer.getAddress();
   }
 
+  public async nextPriceDropTime(): Promise<number> {
+    const auctionStart = (await this.contract.auctionStartAt()) * 1000;
+    const interval = (await this.contract.PRICE_DROP_INTERVAL()) * 1000;
+
+    const nextIntervalNum =
+      Math.floor((Date.now() - auctionStart) / interval) + 1;
+
+    const nextPriceDropTime = auctionStart + nextIntervalNum * interval;
+
+    return nextPriceDropTime;
+  }
+
   public async mint(count: number): Promise<NFT[]> {
     const price = await this.mintPrice();
-    const txn = await this.contract.plantTrees(count, { value: price * count });
 
-    const result = await txn.wait();
+    const address = await this.signer.getAddress();
 
-    return result as NFT[];
+    const txn = await this.contract.mint(count, {
+      from: address,
+      value: price * count,
+    });
+
+    const txnResult = await txn.wait();
+
+    return txnResult.transactionHash;
   }
 
   public async mintPrice(): Promise<number> {
@@ -77,8 +100,8 @@ class Nifty {
       return 'soldOut';
     }
 
-    const isSaleOpen = await this.contract.getSaleState();
-    const auctionStart = await this.contract.AUCTION_START_AT();
+    const isSaleOpen = await this.contract.isSaleLive();
+    const auctionStart = await this.contract.auctionStartAt();
 
     if (!isSaleOpen) {
       return 'closed';
@@ -100,7 +123,7 @@ class Nifty {
   }
 
   public async ownedNFTs(): Promise<NFT[]> {
-    const allOwners = await this.contract.owners();
+    const allOwners = await this.contract.allOwners();
 
     const address = await this.signer.getAddress();
 
