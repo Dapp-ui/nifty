@@ -1,4 +1,4 @@
-import { Network, SaleState } from './types';
+import { CurrencyUnit, Network, SaleState } from './types';
 import { ethers } from 'ethers';
 import abi from './abi';
 import chainIdFromNetwork from './utils/chainIdFromNetwork';
@@ -6,6 +6,7 @@ import chainIdFromNetwork from './utils/chainIdFromNetwork';
 declare global {
   interface Window {
     ethereum: any;
+    web3: any;
   }
 }
 
@@ -22,13 +23,15 @@ class Nifty {
   private provider: ethers.providers.Web3Provider;
 
   constructor(network: Network, contractAddress: string) {
-    if (!window.ethereum) {
+    if (!window.ethereum && !window.web3.currentProvider) {
       throw new Error('No Metamask has been installed');
     }
     this.contractAddress = contractAddress;
     this.network = network;
 
-    this.provider = new ethers.providers.Web3Provider(window.ethereum);
+    this.provider = new ethers.providers.Web3Provider(
+      window.web3?.currentProvider || window.ethereum
+    );
     this.contract = new ethers.Contract(
       this.contractAddress,
       abi,
@@ -90,6 +93,12 @@ class Nifty {
       default:
         return await this.contract.ALLOWLIST_PRICE();
     }
+  }
+
+  public async mintPriceWithUnits(unit: CurrencyUnit = 'wei'): Promise<string> {
+    const priceWei = await this.mintPrice();
+
+    return ethers.utils.formatUnits(priceWei, unit);
   }
 
   public async saleState(): Promise<SaleState> {
