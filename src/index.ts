@@ -2,6 +2,7 @@ import { CurrencyUnit, Network, SaleState } from './types';
 import { ethers } from 'ethers';
 import abi from './abi';
 import chainIdFromNetwork from './utils/chainIdFromNetwork';
+import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 
 declare global {
   interface Window {
@@ -15,23 +16,37 @@ interface NFT {
   uri: string;
 }
 
+function isWriteProvider(
+  provider: ethers.providers.Provider
+): provider is ethers.providers.Web3Provider {
+  return (
+    (provider as ethers.providers.Web3Provider).jsonRpcFetchFunc !== undefined
+  );
+}
+
 class Nifty {
   private contractAddress: string;
   private network: Network;
   private signer: ethers.providers.JsonRpcSigner = null;
   private contract: ethers.Contract;
-  private provider: ethers.providers.Web3Provider;
+  private provider: ethers.providers.Provider;
 
   constructor(network: Network, contractAddress: string) {
     if (!window.ethereum && !window.web3.currentProvider) {
       throw new Error('No Metamask has been installed');
     }
+
     this.contractAddress = contractAddress;
     this.network = network;
 
-    this.provider = new ethers.providers.Web3Provider(
-      window.web3?.currentProvider || window.ethereum
+    this.provider = new ethers.providers.JsonRpcProvider(
+      rpcUrlFromNetwork(network)
     );
+
+    this.provider
+      .getNetwork()
+      .then((network) => console.log('THE NETWORK???', network));
+
     this.contract = new ethers.Contract(
       this.contractAddress,
       abi,
@@ -40,11 +55,22 @@ class Nifty {
   }
 
   public async connectWallet(): Promise<string> {
-    await this.provider.send('wallet_switchEthereumChain', [
+    const writeProvider = new ethers.providers.Web3Provider(
+      window.web3?.currentProvider || window.ethereum,
+      parseInt(chainIdFromNetwork(this.network))
+    );
+
+    await writeProvider.send('eth_requestAccounts', []);
+
+    await writeProvider.send('wallet_switchEthereumChain', [
       { chainId: chainIdFromNetwork(this.network) },
     ]);
 
-    await this.provider.send('eth_requestAccounts', []);
+    this.provider = writeProvider;
+
+    if (!isWriteProvider(this.provider)) {
+      throw new Error('No write privileges, please connect wallet first');
+    }
 
     this.signer = this.provider.getSigner();
 
@@ -54,6 +80,10 @@ class Nifty {
   }
 
   public async getConnectedWallet(): Promise<string> {
+    if (!isWriteProvider(this.provider)) {
+      throw new Error('No wallet is connected');
+    }
+
     return await this.signer.getAddress();
   }
 
@@ -70,6 +100,10 @@ class Nifty {
   }
 
   public async mint(count: number): Promise<NFT[]> {
+    if (!isWriteProvider(this.provider)) {
+      throw new Error('No write privileges, please connect wallet first');
+    }
+
     const price = await this.mintPrice();
 
     const address = await this.signer.getAddress();
@@ -89,7 +123,7 @@ class Nifty {
 
     switch (saleState) {
       case 'openAuction':
-        return await this.contract.getCurrentAuctionPrice();
+        return await this.contract.getAuctionPrice();
       default:
         return await this.contract.ALLOWLIST_PRICE();
     }

@@ -231,6 +231,19 @@ export default [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'allowListSize',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -278,6 +291,19 @@ export default [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'devMint',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -344,6 +370,19 @@ export default [
         internalType: 'bool',
         name: '',
         type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxMintPerAddress',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -527,19 +566,6 @@ export default [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'saleIsLive',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
@@ -553,6 +579,19 @@ export default [
       },
     ],
     name: 'setAllowListAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'newMax',
+        type: 'uint256',
+      },
+    ],
+    name: 'setAllowListSize',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -591,12 +630,56 @@ export default [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'maxMint',
+        type: 'uint256',
+      },
+    ],
+    name: 'setMaxMintPerAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'newMaxSupply',
+        type: 'uint256',
+      },
+    ],
+    name: 'setMaxSupply',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address[]',
+        name: 'allowListers',
+        type: 'address[]',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'setMultipleAllowListAddresses',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'bool',
         name: 'isLive',
         type: 'bool',
       },
     ],
-    name: 'setSaleIsLive',
+    name: 'setSaleLive',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
