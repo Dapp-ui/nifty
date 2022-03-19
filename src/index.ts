@@ -1,5 +1,5 @@
 import { CurrencyUnit, Network, SaleState } from './types';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
 import chainIdFromNetwork from './utils/chainIdFromNetwork';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
@@ -42,10 +42,6 @@ class Nifty {
     this.provider = new ethers.providers.JsonRpcProvider(
       rpcUrlFromNetwork(network)
     );
-
-    this.provider
-      .getNetwork()
-      .then((network) => console.log('THE NETWORK???', network));
 
     this.contract = new ethers.Contract(
       this.contractAddress,
@@ -106,11 +102,13 @@ class Nifty {
 
     const price = await this.mintPrice();
 
+    console.log('GOT THE MINT PRICE: ', price);
+
     const address = await this.signer.getAddress();
 
     const txn = await this.contract.mint(count, {
       from: address,
-      value: price * count,
+      value: price.mul(count),
     });
 
     const txnResult = await txn.wait();
@@ -118,7 +116,7 @@ class Nifty {
     return txnResult.transactionHash;
   }
 
-  public async mintPrice(): Promise<number> {
+  public async mintPrice(): Promise<BigNumber> {
     const saleState = await this.saleState();
 
     switch (saleState) {
