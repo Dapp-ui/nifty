@@ -8,6 +8,7 @@ declare global {
   interface Window {
     ethereum: any;
     web3: any;
+    ethersjs: any;
   }
 }
 
@@ -19,9 +20,11 @@ interface NFT {
 function isWriteProvider(
   provider: ethers.providers.Provider
 ): provider is ethers.providers.Web3Provider {
-  return (
-    (provider as ethers.providers.Web3Provider).jsonRpcFetchFunc !== undefined
-  );
+  // TODO - figure out how to make this work on mobile
+  return true;
+  // return (
+  //   (provider as ethers.providers.Web3Provider).jsonRpcFetchFunc !== undefined
+  // );
 }
 
 class Nifty {
@@ -48,11 +51,31 @@ class Nifty {
       abi,
       this.provider
     );
+
+    window.ethersjs = ethers;
+  }
+
+  _getProvider() {
+    if (
+      window.ethereum &&
+      window.ethereum.isMetaMask &&
+      !window.ethereum.overrideIsMetaMask
+    ) {
+      return window.ethereum;
+    }
+
+    if (window.ethereum && window.ethereum.overrideIsMetaMask) {
+      return window.ethereum.providers[0];
+    }
+
+    return null;
   }
 
   public async connectWallet(): Promise<string> {
+    const windowProvider = this._getProvider();
+
     const writeProvider = new ethers.providers.Web3Provider(
-      window.web3?.currentProvider || window.ethereum,
+      windowProvider,
       parseInt(chainIdFromNetwork(this.network))
     );
 
@@ -64,11 +87,13 @@ class Nifty {
 
     this.provider = writeProvider;
 
-    if (!isWriteProvider(this.provider)) {
-      throw new Error('No write privileges, please connect wallet first');
+    if (!isWriteProvider(writeProvider)) {
+      throw new Error(
+        'No write privileges to connect, please connect wallet first'
+      );
     }
 
-    this.signer = this.provider.getSigner();
+    this.signer = writeProvider.getSigner();
 
     this.contract = new ethers.Contract(this.contractAddress, abi, this.signer);
 
@@ -97,7 +122,9 @@ class Nifty {
 
   public async mint(count: number): Promise<NFT[]> {
     if (!isWriteProvider(this.provider)) {
-      throw new Error('No write privileges, please connect wallet first');
+      throw new Error(
+        'No write privileges to mint, please connect wallet first'
+      );
     }
 
     const price = await this.mintPrice();
