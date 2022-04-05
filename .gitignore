@@ -135,7 +135,7 @@ dist
 build/*
 
 # Web3 Stuff
-./artifacts/*
-./typechain-types/*
-./cache/*
-./node_modules/*
+artifacts
+cache
+typechain-types
+build

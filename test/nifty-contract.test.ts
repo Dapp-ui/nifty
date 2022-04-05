@@ -1,3 +1,4 @@
+import * as hre from 'hardhat';
 import * as chaiAsPromised from 'chai-as-promised';
 import { network } from 'hardhat';
 
