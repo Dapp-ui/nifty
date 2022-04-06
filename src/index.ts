@@ -3,6 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 import isWriteProvider from './utils/isWriteProvider';
+import { Nifty as NiftyContract } from '../typechain-types';
 
 interface NFT {
   id: number;
@@ -12,14 +13,14 @@ interface NFT {
 class Nifty {
   private contractAddress: string;
   private signer: ethers.providers.JsonRpcSigner = null;
-  private contract: ethers.Contract;
+  private contract: NiftyContract;
   private provider: ethers.providers.Provider;
   private network: Network;
 
   constructor(network: Network, contractAddress: string) {
     // running in the browser
     if (typeof window !== 'undefined') {
-      // @ts-ignore - TODO fix this
+      // @ts-ignore - TODO remove this ignore
       window.ethers = ethers;
     }
 
@@ -33,13 +34,15 @@ class Nifty {
       this.contractAddress,
       abi,
       this.provider
-    );
+    ) as NiftyContract;
   }
 
   public async nextPriceDropTime(): Promise<number> {
-    const auctionStart = (await this.contract.auctionStartAt()) * 1000;
-    const interval =
-      (await this.contract.dutchAuctionPriceDropInterval()) * 1000;
+    const auctionStartSeconds = await this.contract.auctionStartAt();
+    const auctionStart = auctionStartSeconds.mul(1000).toNumber();
+
+    const intervalSeconds = await this.contract.dutchAuctionPriceDropInterval();
+    const interval = intervalSeconds.mul(1000).toNumber();
 
     const nextIntervalNum =
       Math.floor((Date.now() - auctionStart) / interval) + 1;
@@ -49,7 +52,7 @@ class Nifty {
     return nextPriceDropTime;
   }
 
-  public async mint(count: number): Promise<NFT[]> {
+  public async mint(count: number): Promise<string> {
     if (!isWriteProvider(this.provider)) {
       throw new Error(
         'No write privileges to mint, please connect wallet first'
@@ -96,7 +99,7 @@ class Nifty {
     }
 
     const isSaleOpen = await this.contract.isSaleLive();
-    const auctionStart = await this.contract.auctionStartAt();
+    const auctionStart = (await this.contract.auctionStartAt()).toNumber();
 
     if (!isSaleOpen) {
       return 'closed';
@@ -110,11 +113,11 @@ class Nifty {
   }
 
   public async maxSupply(): Promise<number> {
-    return await this.contract.maxSupply();
+    return (await this.contract.maxSupply()).toNumber();
   }
 
   public async totalNumMinted(): Promise<number> {
-    return await this.contract.numMinted();
+    return (await this.contract.numMinted()).toNumber();
   }
 
   public async ownedNFTs(): Promise<NFT[]> {
@@ -122,7 +125,8 @@ class Nifty {
 
     const address = await this.signer.getAddress();
 
-    const ownedIds = Object.keys(allOwners).filter((id) => {
+    const ownedIds = Object.keys(allOwners).filter((idStr) => {
+      const id = parseInt(idStr);
       return allOwners[id] === address;
     });
 
