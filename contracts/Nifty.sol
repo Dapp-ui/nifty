@@ -16,8 +16,8 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
 
     address payable private _wallet;
 
-    uint256 public MAX_SUPPLY;
-    uint256 public ALLOWLIST_PRICE;
+    uint256 public maxSupply;
+    uint256 public allowListPrice;
 
     // Dutch Auction values
     uint256 public auctionStartAt = 0; // zero if auction has not started
@@ -25,31 +25,31 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
     uint256 public maxMintPerAddress = 10;
     uint256 public allowListSize = 10000;
 
-    uint256 public AUCTION_DURATION;
-    uint256 public AUCTION_START_PRICE;
-    uint256 public AUCTION_END_PRICE;
-    uint256 public PRICE_DROP_INTERVAL;
+    uint256 public dutchAuctionDuration;
+    uint256 public dutchAuctionStartPrice;
+    uint256 public dutchAuctionEndPrice;
+    uint256 public dutchAuctionPriceDropInterval;
 
     bool public isSaleLive = false;
     string baseURI = "ipfs://";
 
     constructor(
         address payable wallet,
-        uint256 maxSupply,
-        uint256 allowListPrice,
-        uint256 auctionDuration,
-        uint256 auctionStartPrice,
-        uint256 auctionEndPrice,
-        uint256 priceDropInterval,
+        uint256 initialMaxSupply,
+        uint256 initialAllowListPrice,
+        uint256 initialDutchAuctionDuration,
+        uint256 initialDutchAuctionStartPrice,
+        uint256 initialDutchAuctionEndPrice,
+        uint256 initialDutchAuctionPriceDropInterval,
         uint96 royalty
     ) ERC721("NAME", "TOKEN") {
         _wallet = wallet;
-        MAX_SUPPLY = maxSupply;
-        ALLOWLIST_PRICE = allowListPrice;
-        AUCTION_DURATION = auctionDuration;
-        AUCTION_START_PRICE = auctionStartPrice;
-        AUCTION_END_PRICE = auctionEndPrice;
-        PRICE_DROP_INTERVAL = priceDropInterval;
+        maxSupply = initialMaxSupply;
+        allowListPrice = initialAllowListPrice;
+        dutchAuctionDuration = initialDutchAuctionDuration;
+        dutchAuctionStartPrice = initialDutchAuctionStartPrice;
+        dutchAuctionEndPrice = initialDutchAuctionEndPrice;
+        dutchAuctionPriceDropInterval = initialDutchAuctionPriceDropInterval;
 
         _setDefaultRoyalty(address(this), royalty);
     }
@@ -95,24 +95,24 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
             newMaxSupply > _tokenIds.current(),
             "Nifty: cannot set max supply less than current minted supply"
         );
-        MAX_SUPPLY = newMaxSupply;
+        maxSupply = newMaxSupply;
     }
 
     function setAuctionStartPrice(uint256 newPrice) public onlyOwner {
-        AUCTION_START_PRICE = newPrice;
+        dutchAuctionStartPrice = newPrice;
     }
 
     function setAuctionEndPrice(uint256 newPrice) public onlyOwner {
-        AUCTION_END_PRICE = newPrice;
+        dutchAuctionEndPrice = newPrice;
     }
 
     function setAllowListPrice(uint256 newPrice) public onlyOwner {
-        ALLOWLIST_PRICE = newPrice;
+        allowListPrice = newPrice;
     }
 
     function _mintFromAllowList(uint256 count) internal {
         require(
-            msg.value >= ALLOWLIST_PRICE * count,
+            msg.value >= allowListPrice * count,
             "Nifty: not enough funds sent"
         );
 
@@ -145,7 +145,7 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
     }
 
     function _mint() internal {
-        require(_tokenIds.current() < MAX_SUPPLY, "Nifty: no Niftys left");
+        require(_tokenIds.current() < maxSupply, "Nifty: no Niftys left");
         address recipient = _msgSender();
         uint256 numMintedAlready = balanceOf(recipient);
         require(
@@ -214,24 +214,26 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
     function getAuctionPrice() public view returns (uint256) {
         // Auction has not started yet
         if (auctionStartAt == 0) {
-            return AUCTION_START_PRICE;
+            return dutchAuctionStartPrice;
         }
 
         // Auction is after the end
-        if (block.timestamp - auctionStartAt > AUCTION_DURATION) {
-            return AUCTION_END_PRICE;
+        if (block.timestamp - auctionStartAt > dutchAuctionDuration) {
+            return dutchAuctionEndPrice;
         }
 
         // calculate price from the number intervals
-        uint256 numIntervalsTotal = AUCTION_DURATION / PRICE_DROP_INTERVAL;
+        uint256 numIntervalsTotal = dutchAuctionDuration /
+            dutchAuctionPriceDropInterval;
 
         uint256 numIntervalsElapsed = (block.timestamp - auctionStartAt) /
-            PRICE_DROP_INTERVAL;
+            dutchAuctionPriceDropInterval;
 
         uint256 discount = (numIntervalsElapsed *
-            (AUCTION_START_PRICE - AUCTION_END_PRICE)) / numIntervalsTotal;
+            (dutchAuctionStartPrice - dutchAuctionEndPrice)) /
+            numIntervalsTotal;
 
-        return AUCTION_START_PRICE - discount;
+        return dutchAuctionStartPrice - discount;
     }
 
     function withdraw() public onlyOwner {
@@ -244,9 +246,9 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
     }
 
     function allOwners() external view returns (address[] memory) {
-        address[] memory _allOwners = new address[](MAX_SUPPLY + 1);
+        address[] memory _allOwners = new address[](maxSupply + 1);
 
-        for (uint256 i = 1; i <= MAX_SUPPLY; i++) {
+        for (uint256 i = 1; i <= maxSupply; i++) {
             if (_exists(i)) {
                 address owner = ownerOf(i);
                 _allOwners[i] = owner;

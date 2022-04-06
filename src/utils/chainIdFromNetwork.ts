@@ -10,6 +10,8 @@ const chainIdFromNetwork = (network: Network): string => {
       return '0x89';
     case 'mainnet':
       return '0x1';
+    case 'hardhat':
+      return '0x7A69';
   }
 };
 

@@ -1,4 +1,4 @@
-const { ethers } = require('ethers');
+import * as ethers from 'ethers';
 
 const allowListers = [];
 

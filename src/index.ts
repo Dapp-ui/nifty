@@ -1,116 +1,45 @@
 import { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
-import chainIdFromNetwork from './utils/chainIdFromNetwork';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
-
-declare global {
-  interface Window {
-    ethereum: any;
-    web3: any;
-    ethersjs: any;
-  }
-}
+import isWriteProvider from './utils/isWriteProvider';
 
 interface NFT {
   id: number;
   uri: string;
 }
 
-function isWriteProvider(
-  provider: ethers.providers.Provider
-): provider is ethers.providers.Web3Provider {
-  // TODO - figure out how to make this work on mobile
-  return true;
-  // return (
-  //   (provider as ethers.providers.Web3Provider).jsonRpcFetchFunc !== undefined
-  // );
-}
-
 class Nifty {
   private contractAddress: string;
-  private network: Network;
   private signer: ethers.providers.JsonRpcSigner = null;
   private contract: ethers.Contract;
   private provider: ethers.providers.Provider;
+  private network: Network;
 
   constructor(network: Network, contractAddress: string) {
-    if (!window.ethereum && !window.web3.currentProvider) {
-      throw new Error('No Metamask has been installed');
+    // running in the browser
+    if (typeof window !== 'undefined') {
+      // @ts-ignore - TODO fix this
+      window.ethers = ethers;
     }
 
     this.contractAddress = contractAddress;
     this.network = network;
 
-    this.provider = new ethers.providers.JsonRpcProvider(
-      rpcUrlFromNetwork(network)
-    );
+    const rpcUrl = rpcUrlFromNetwork(this.network);
+    this.provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
     this.contract = new ethers.Contract(
       this.contractAddress,
       abi,
       this.provider
     );
-
-    window.ethersjs = ethers;
-  }
-
-  _getProvider() {
-    if (
-      window.ethereum &&
-      window.ethereum.isMetaMask &&
-      !window.ethereum.overrideIsMetaMask
-    ) {
-      return window.ethereum;
-    }
-
-    if (window.ethereum && window.ethereum.overrideIsMetaMask) {
-      return window.ethereum.providers[0];
-    }
-
-    return null;
-  }
-
-  public async connectWallet(): Promise<string> {
-    const windowProvider = this._getProvider();
-
-    const writeProvider = new ethers.providers.Web3Provider(
-      windowProvider,
-      parseInt(chainIdFromNetwork(this.network))
-    );
-
-    await writeProvider.send('eth_requestAccounts', []);
-
-    await writeProvider.send('wallet_switchEthereumChain', [
-      { chainId: chainIdFromNetwork(this.network) },
-    ]);
-
-    this.provider = writeProvider;
-
-    if (!isWriteProvider(writeProvider)) {
-      throw new Error(
-        'No write privileges to connect, please connect wallet first'
-      );
-    }
-
-    this.signer = writeProvider.getSigner();
-
-    this.contract = new ethers.Contract(this.contractAddress, abi, this.signer);
-
-    return await this.signer.getAddress();
-  }
-
-  public async getConnectedWallet(): Promise<string> {
-    if (!isWriteProvider(this.provider)) {
-      throw new Error('No wallet is connected');
-    }
-
-    return await this.signer.getAddress();
   }
 
   public async nextPriceDropTime(): Promise<number> {
     const auctionStart = (await this.contract.auctionStartAt()) * 1000;
-    const interval = (await this.contract.PRICE_DROP_INTERVAL()) * 1000;
+    const interval =
+      (await this.contract.dutchAuctionPriceDropInterval()) * 1000;
 
     const nextIntervalNum =
       Math.floor((Date.now() - auctionStart) / interval) + 1;
@@ -127,9 +56,7 @@ class Nifty {
       );
     }
 
-    const price = await this.mintPrice();
-
-    console.log('GOT THE MINT PRICE: ', price);
+    const price = await this.mintPriceWei();
 
     const address = await this.signer.getAddress();
 
@@ -143,26 +70,26 @@ class Nifty {
     return txnResult.transactionHash;
   }
 
-  public async mintPrice(): Promise<BigNumber> {
+  private async mintPriceWei(): Promise<BigNumber> {
     const saleState = await this.saleState();
 
     switch (saleState) {
       case 'openAuction':
         return await this.contract.getAuctionPrice();
       default:
-        return await this.contract.ALLOWLIST_PRICE();
+        return await this.contract.allowListPrice();
     }
   }
 
-  public async mintPriceWithUnits(unit: CurrencyUnit = 'wei'): Promise<string> {
-    const priceWei = await this.mintPrice();
+  public async mintPrice(unit: CurrencyUnit = 'wei'): Promise<string> {
+    const priceWei = await this.mintPriceWei();
 
     return ethers.utils.formatUnits(priceWei, unit);
   }
 
   public async saleState(): Promise<SaleState> {
     const numMinted = await this.contract.numMinted();
-    const maxSupply = await this.contract.MAX_SUPPLY();
+    const maxSupply = await this.contract.maxSupply();
 
     if (numMinted === maxSupply) {
       return 'soldOut';
@@ -183,7 +110,7 @@ class Nifty {
   }
 
   public async maxSupply(): Promise<number> {
-    return await this.contract.MAX_SUPPLY();
+    return await this.contract.maxSupply();
   }
 
   public async totalNumMinted(): Promise<number> {

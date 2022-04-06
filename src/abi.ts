@@ -8,32 +8,32 @@ export default [
       },
       {
         internalType: 'uint256',
-        name: 'maxSupply',
+        name: 'initialMaxSupply',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'allowListPrice',
+        name: 'initialAllowListPrice',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'auctionDuration',
+        name: 'initialDutchAuctionDuration',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'auctionStartPrice',
+        name: 'initialDutchAuctionStartPrice',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'auctionEndPrice',
+        name: 'initialDutchAuctionEndPrice',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'priceDropInterval',
+        name: 'initialDutchAuctionPriceDropInterval',
         type: 'uint256',
       },
       {
@@ -141,90 +141,25 @@ export default [
   },
   {
     inputs: [],
-    name: 'ALLOWLIST_PRICE',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'AUCTION_DURATION',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'AUCTION_END_PRICE',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'AUCTION_START_PRICE',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'MAX_SUPPLY',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'PRICE_DROP_INTERVAL',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'allOwners',
     outputs: [
       {
         internalType: 'address[]',
         name: '',
         type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'allowListPrice',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -307,6 +242,58 @@ export default [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'dutchAuctionDuration',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'dutchAuctionEndPrice',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'dutchAuctionPriceDropInterval',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'dutchAuctionStartPrice',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -378,6 +365,19 @@ export default [
   {
     inputs: [],
     name: 'maxMintPerAddress',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxSupply',
     outputs: [
       {
         internalType: 'uint256',
@@ -587,6 +587,19 @@ export default [
     inputs: [
       {
         internalType: 'uint256',
+        name: 'newPrice',
+        type: 'uint256',
+      },
+    ],
+    name: 'setAllowListPrice',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
         name: 'newMax',
         type: 'uint256',
       },
@@ -610,6 +623,32 @@ export default [
       },
     ],
     name: 'setApprovalForAll',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'newPrice',
+        type: 'uint256',
+      },
+    ],
+    name: 'setAuctionEndPrice',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'newPrice',
+        type: 'uint256',
+      },
+    ],
+    name: 'setAuctionStartPrice',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

@@ -1,6 +1,9 @@
-import * as hre from 'hardhat';
+import '@nomiclabs/hardhat-waffle';
+import { ethers, network, waffle } from 'hardhat';
+import type { Nifty } from '../../typechain-types';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import { network } from 'hardhat';
 
 chai.use(chaiAsPromised);
 
@@ -16,18 +19,20 @@ const royaltyNumerator = 1000; // out of 10000
 
 const originalBalance = ethers.BigNumber.from('10000000000000000000000');
 
-describe('TestNifty', function () {
-  let nifty, owner, user1;
+describe('TestNiftyContract', function () {
+  let nifty: Nifty;
+  let owner: SignerWithAddress;
+  let user1: SignerWithAddress;
 
   beforeEach(async function () {
     [owner, user1] = await ethers.getSigners();
 
     // reset the network to prevent tests from affecting each other
-    await hre.network.provider.send('hardhat_reset');
+    await network.provider.send('hardhat_reset');
 
     const Nifty = await ethers.getContractFactory('Nifty');
 
-    nifty = await Nifty.deploy(
+    nifty = (await Nifty.deploy(
       user1.address,
       maxSupply,
       allowListPrice,
@@ -36,12 +41,12 @@ describe('TestNifty', function () {
       auctionEndPrice,
       priceDropInterval,
       royaltyNumerator
-    );
+    )) as Nifty;
   });
 
   it('should fail to mint if the sale has not started', async function () {
     await expect(nifty.mint(1)).to.eventually.be.rejectedWith(
-      'NFTree: sale is not currently live'
+      'Nifty: sale is not currently live'
     );
   });
 
@@ -50,7 +55,7 @@ describe('TestNifty', function () {
     await expect(
       nifty.mint(1, { value: allowListPrice })
     ).to.eventually.be.rejectedWith(
-      'NFTree: sender does not have enough allow list entries'
+      'Nifty: sender does not have enough allow list entries'
     );
   });
 
@@ -65,7 +70,7 @@ describe('TestNifty', function () {
     await expect(
       nifty.mint(1, { value: allowListPrice })
     ).to.eventually.be.rejectedWith(
-      'NFTree: sender does not have enough allow list entries'
+      'Nifty: sender does not have enough allow list entries'
     );
   });
 
@@ -73,7 +78,7 @@ describe('TestNifty', function () {
     await nifty.setSaleLive(true);
     await expect(
       nifty.mint(1, { value: allowListPrice - 1 })
-    ).to.eventually.be.rejectedWith('NFTree: not enough funds sent');
+    ).to.eventually.be.rejectedWith('Nifty: not enough funds sent');
   });
 
   it('should set appropriate price with respect to time and the auction', async function () {
@@ -124,7 +129,7 @@ describe('TestNifty', function () {
 
     await expect(
       nifty.mint(1, { value: auctionStartPrice - 1 })
-    ).to.be.eventually.rejectedWith('NFTree: not enough funds sent');
+    ).to.be.eventually.rejectedWith('Nifty: not enough funds sent');
   });
 
   it('should update the baseURI appropriately', async function () {
@@ -173,7 +178,7 @@ describe('TestNifty', function () {
 
     await expect(
       nifty.mint(1, { value: auctionStartPrice })
-    ).to.eventually.be.rejectedWith('NFTree: no NFTrees left');
+    ).to.eventually.be.rejectedWith('Nifty: no Niftys left');
   });
 
   it('should properly withdraw balance to external wallet', async function () {
@@ -182,13 +187,13 @@ describe('TestNifty', function () {
 
     await nifty.mint(1, { value: auctionStartPrice });
 
-    const ogBalance = await hre.waffle.provider.getBalance(user1.address);
+    const ogBalance = await waffle.provider.getBalance(user1.address);
 
     expect(ogBalance).to.equal(originalBalance);
 
     await nifty.withdraw();
 
-    const balance = await hre.waffle.provider.getBalance(user1.address);
+    const balance = await waffle.provider.getBalance(user1.address);
 
     expect(balance).to.equal(originalBalance.add(auctionStartPrice));
   });
@@ -226,7 +231,7 @@ describe('TestNifty', function () {
     await nifty.startAuction();
     await expect(
       nifty.mint(2, { value: auctionStartPrice * 1.5 })
-    ).to.be.rejectedWith('NFTree: not enough funds sent');
+    ).to.be.rejectedWith('Nifty: not enough funds sent');
   });
 
   it('should reject attempting to mint too many trees via allowList', async function () {
@@ -235,7 +240,7 @@ describe('TestNifty', function () {
     await expect(
       nifty.mint(3, { value: allowListPrice * 3 })
     ).to.eventually.be.rejectedWith(
-      'NFTree: sender does not have enough allow list entries'
+      'Nifty: sender does not have enough allow list entries'
     );
   });
 
@@ -243,7 +248,7 @@ describe('TestNifty', function () {
     await nifty.setSaleLive(true);
     await nifty.setAllowListAddress(owner.address, 1);
     await expect(nifty.mint(1, { value: allowListPrice * 1 }))
-      .to.emit(nftree, 'Transfer')
+      .to.emit(nifty, 'Transfer')
       .withArgs('0x0000000000000000000000000000000000000000', owner.address, 1);
   });
 
@@ -283,7 +288,7 @@ describe('TestNifty', function () {
     await expect(
       nifty.mint(2, { value: allowListPrice * 2 })
     ).to.be.eventually.rejectedWith(
-      'NFTree: max mints for this address already reached'
+      'Nifty: max mints for this address already reached'
     );
   });
 
@@ -304,7 +309,7 @@ describe('TestNifty', function () {
 
     await expect(
       nifty.mint(2, { value: allowListPrice * 2 })
-    ).to.be.eventually.rejectedWith('NFTree: max allow list was reached');
+    ).to.be.eventually.rejectedWith('Nifty: max allow list was reached');
   });
 
   it('should allow for multiple people to be added to the whitelist simultaneously', async function () {
@@ -325,7 +330,7 @@ describe('TestNifty', function () {
 
     await nifty.devMint(1);
     await expect(nifty.devMint(1)).to.eventually.be.rejectedWith(
-      'NFTree: no NFTrees left'
+      'Nifty: no Niftys left'
     );
   });
 
@@ -334,9 +339,9 @@ describe('TestNifty', function () {
     await nifty.setAuctionEndPrice(50);
     await nifty.setAllowListPrice(75);
 
-    const startPrice = await nifty.AUCTION_START_PRICE();
-    const endPrice = await nifty.AUCTION_END_PRICE();
-    const allowListPrice = await nifty.ALLOWLIST_PRICE();
+    const startPrice = await nifty.dutchAuctionStartPrice();
+    const endPrice = await nifty.dutchAuctionEndPrice();
+    const allowListPrice = await nifty.allowListPrice();
 
     expect(startPrice).to.equal(220);
     expect(endPrice).to.equal(50);

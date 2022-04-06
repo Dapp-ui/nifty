@@ -8,6 +8,8 @@ const rpcUrlFromNetwork = (network: Network): string => {
       return '';
     case 'polygon':
       return 'https://polygon-mainnet.g.alchemy.com/v2/u4t-e_ZAM08ir-1nryKpU-t7bDi2Zgjp';
+    case 'hardhat':
+      return 'http://127.0.0.1:8545';
     case 'mainnet':
       return '';
   }
