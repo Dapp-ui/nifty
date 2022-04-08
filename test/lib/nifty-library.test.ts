@@ -4,7 +4,7 @@ import type { Nifty } from '../../typechain-types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import NiftyLib from '../../src/index';
+import NiftyLib from '../../src/nifty';
 
 chai.use(chaiAsPromised);
 

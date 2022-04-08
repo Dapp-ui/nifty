@@ -12,12 +12,15 @@ interface NFT {
 
 class Nifty {
   private contractAddress: string;
-  private signer: ethers.providers.JsonRpcSigner = null;
   private contract: NiftyContract;
   private provider: ethers.providers.Provider;
   private network: Network;
 
-  constructor(network: Network, contractAddress: string) {
+  constructor(
+    network: Network,
+    contractAddress: string,
+    provider: ethers.providers.Provider = null
+  ) {
     // running in the browser
     if (typeof window !== 'undefined') {
       // @ts-ignore - TODO remove this ignore
@@ -28,7 +31,9 @@ class Nifty {
     this.network = network;
 
     const rpcUrl = rpcUrlFromNetwork(this.network);
-    this.provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
+    // allow a passed provider to be used!
+    this.provider = provider || new ethers.providers.JsonRpcProvider(rpcUrl);
 
     this.contract = new ethers.Contract(
       this.contractAddress,
@@ -121,9 +126,13 @@ class Nifty {
   }
 
   public async ownedNFTs(): Promise<NFT[]> {
+    if (!isWriteProvider(this.provider)) {
+      throw new Error('No signer detected, wallet may not be connected');
+    }
+
     const allOwners = await this.contract.allOwners();
 
-    const address = await this.signer.getAddress();
+    const address = await this.provider.getSigner().getAddress();
 
     const ownedIds = Object.keys(allOwners).filter((idStr) => {
       const id = parseInt(idStr);
