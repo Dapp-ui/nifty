@@ -4,7 +4,7 @@
   }
 </script>
 
-<button class="connectButton" onclick={handleClick}>Connect Wallet</button>
+<button class="connectButton" on:click={handleClick}>Connect Wallet</button>
 
 <style>
   .connectButton {

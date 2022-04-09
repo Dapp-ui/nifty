@@ -1,4 +1,4 @@
-import { Network } from '../types';
+import type { Network } from '../types';
 
 const rpcUrlFromNetwork = (network: Network): string => {
   switch (network) {

@@ -1,14 +1,5 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
-  "include": ["src/**/*", "src/node_modules/**/*", "./src/svelte/main.ts"],
-  "exclude": ["node_modules/*", "__sapper__/*", "static/*"],
-  "compilerOptions": {
-    "outDir": "./build/",
-    "noImplicitAny": true,
-    "module": "es6",
-    "target": "es5",
-    "jsx": "react",
-    "allowJs": true,
-    "moduleResolution": "node"
-  }
+  "include": ["src/svelte/**/*", "src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
 }

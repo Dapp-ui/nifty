@@ -64,5 +64,7 @@ module.exports = {
   devtool: prod ? false : 'source-map',
   devServer: {
     hot: true,
+    static: path.resolve(__dirname, 'public'),
+    compress: true,
   },
 };

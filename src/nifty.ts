@@ -1,9 +1,9 @@
-import { CurrencyUnit, Network, SaleState } from './types';
+import type { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 import isWriteProvider from './utils/isWriteProvider';
-import { Nifty as NiftyContract } from '../typechain-types';
+import type { Nifty as NiftyContract } from '../typechain-types';
 
 interface NFT {
   id: number;
@@ -66,7 +66,7 @@ class Nifty {
 
     const price = await this.mintPriceWei();
 
-    const address = await this.signer.getAddress();
+    const address = await this.provider.getSigner().getAddress();
 
     const txn = await this.contract.mint(count, {
       from: address,

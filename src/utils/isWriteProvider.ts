@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 
 function isWriteProvider(
   provider: ethers.providers.Provider

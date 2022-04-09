@@ -1,9 +1,11 @@
 import './global.css';
 
-import App from './ConnectWallet.svelte';
+import ConnectWallet from './ConnectWallet.svelte';
 
-const app = new App({
-  target: document.body,
+const walletConnector = document.getElementById('connectWalletButton');
+
+const connectWallet = new ConnectWallet({
+  target: walletConnector,
 });
 
-export default { app };
+export default { connectWallet };
