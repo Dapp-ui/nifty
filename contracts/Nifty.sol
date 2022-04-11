@@ -92,7 +92,7 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
 
     function setMaxSupply(uint256 newMaxSupply) public onlyOwner {
         require(
-            newMaxSupply > _tokenIds.current(),
+            newMaxSupply >= _tokenIds.current(),
             "Nifty: cannot set max supply less than current minted supply"
         );
         maxSupply = newMaxSupply;
