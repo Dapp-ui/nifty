@@ -1,16 +1,11 @@
 <script lang="ts">
+  import GenericButton from './parts/GenericButton.svelte';
   function handleClick() {
-    console.log('THE BUTTON WAS CLICKED');
+    console.log('BUTTON CLICKED!!!');
   }
 </script>
 
-<button class="connectButton" on:click={handleClick}>Connect Wallet</button>
+<GenericButton {handleClick} />
 
 <style>
-  .connectButton {
-    background: red;
-    border: 1px solid black;
-    color: white;
-    padding: 30px 10px;
-  }
 </style>
