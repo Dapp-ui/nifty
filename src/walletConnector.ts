@@ -1,64 +1,71 @@
-// import chainIdFromNetwork from './utils/chainIdFromNetwork';
-// import { CurrencyUnit, Network, SaleState } from './types';
-// import { BigNumber, ethers } from 'ethers';
+import chainIdFromNetwork from './utils/chainIdFromNetwork';
+import type { CurrencyUnit, Network, SaleState } from './types';
+import { BigNumber, ethers, Wallet } from 'ethers';
+import isWriteProvider from './utils/isWriteProvider';
 
-// class WalletConnector {
-//   private network: Network;
+type WalletType = 'metamask' | 'coinbase';
 
-//   _getProvider() {
-//     if (
-//       window.ethereum &&
-//       window.ethereum.isMetaMask &&
-//       !window.ethereum.overrideIsMetaMask
-//     ) {
-//       return window.ethereum;
-//     }
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
 
-//     if (window.ethereum && window.ethereum.overrideIsMetaMask) {
-//       return window.ethereum.providers[0];
-//     }
+class WalletConnector {
+  private network: Network;
+  private walletType: WalletType;
+  private provider: ethers.providers.Provider;
+  private signer: ethers.Signer;
 
-//     return null;
-//   }
+  constructor(network: Network) {
+    this.network = network;
+  }
 
-//   public async connectWallet(): Promise<string> {
-//     const windowProvider = this._getProvider();
+  _getProvider() {
+    // TODO - use wallet type here to get provider
+    if (
+      window.ethereum &&
+      window.ethereum.isMetaMask &&
+      !window.ethereum.overrideIsMetaMask
+    ) {
+      return window.ethereum;
+    }
 
-//     const writeProvider = new ethers.providers.Web3Provider(
-//       windowProvider,
-//       parseInt(chainIdFromNetwork(this.network))
-//     );
+    if (window.ethereum && window.ethereum.overrideIsMetaMask) {
+      return window.ethereum.providers[0];
+    }
 
-//     await writeProvider.send('eth_requestAccounts', []);
+    return null;
+  }
 
-//     await writeProvider.send('wallet_switchEthereumChain', [
-//       { chainId: chainIdFromNetwork(this.network) },
-//     ]);
+  public async connectWallet(walletType): Promise<string> {
+    this.walletType = walletType;
 
-//     this.provider = writeProvider;
+    const windowProvider = this._getProvider();
 
-//     if (!isWriteProvider(writeProvider)) {
-//       throw new Error(
-//         'No write privileges to connect, please connect wallet first'
-//       );
-//     }
+    const writeProvider = new ethers.providers.Web3Provider(
+      windowProvider,
+      parseInt(chainIdFromNetwork(this.network))
+    );
 
-//     this.signer = writeProvider.getSigner();
+    await writeProvider.send('eth_requestAccounts', []);
 
-//     this.contract = new ethers.Contract(this.contractAddress, abi, this.signer);
+    await writeProvider.send('wallet_switchEthereumChain', [
+      { chainId: chainIdFromNetwork(this.network) },
+    ]);
 
-//     return await this.signer.getAddress();
-//   }
+    this.provider = writeProvider;
 
-//   public async getConnectedWallet(): Promise<string> {
-//     if (!isWriteProvider(this.provider)) {
-//       throw new Error('No wallet is connected');
-//     }
+    if (!isWriteProvider(writeProvider)) {
+      throw new Error(
+        'No write privileges to connect, please connect wallet first'
+      );
+    }
 
-//     return await this.signer.getAddress();
-//   }
-// }
+    this.signer = writeProvider.getSigner();
 
-// export default WalletConnector;
+    return await this.signer.getAddress();
+  }
+}
 
-export default {};
+export default WalletConnector;

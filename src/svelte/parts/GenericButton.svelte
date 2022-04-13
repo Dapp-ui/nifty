@@ -1,8 +1,9 @@
 <script lang="ts">
   export let handleClick: () => void;
+  export let title = 'Connect Wallet';
 </script>
 
-<button class="connectButton" on:click={handleClick}>Connect Wallet</button>
+<button class="connectButton" on:click={handleClick}>{title}</button>
 
 <style>
   .connectButton {

@@ -3,6 +3,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
+  font-family: 'Roboto', Roboto, sans-serif;
 }
 
 body {
@@ -10,4 +11,23 @@ body {
   margin: 0;
   padding: 8px;
   box-sizing: border-box;
+}
+
+.bgBlur {
+  backdrop-filter: blur(4px);
+}
+
+hr {
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+.close {
+  cursor: pointer;
+}
+
+.window {
+  width: 500px !important;
+  height: 450px !important;
 }
