@@ -3,6 +3,7 @@
   import GenericButton from './parts/GenericButton.svelte';
   import { getContext } from 'svelte';
   import MintPopUp from './MintPopUp.svelte';
+  import nifty from './niftyInstance';
   const { open } = getContext('simple-modal');
 
   const showPopUp = () => {

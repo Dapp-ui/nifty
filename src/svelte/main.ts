@@ -2,6 +2,7 @@ import './global.css';
 
 import ConnectWallet from './ConnectWalletFlow.svelte';
 import MintFlow from './MintFlow.svelte';
+import ErrorBanner from './parts/ErrorBanner.svelte';
 
 const walletConnector = document.getElementById('connectWalletButton');
 const mintButton = document.getElementById('mintButton');
@@ -14,4 +15,8 @@ const mint = new MintFlow({
   target: mintButton,
 });
 
-export default { connectWallet, mint };
+const errorText = new ErrorBanner({
+  target: document.body,
+});
+
+export default { connectWallet, mint, errorText };
