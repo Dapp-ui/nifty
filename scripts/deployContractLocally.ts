@@ -18,10 +18,10 @@ async function main() {
 
   // ARGS
   const maxSupply = 10;
-  const allowListPrice = 200;
+  const allowListPrice = hre.ethers.utils.formatUnits(0.1, 'ether');
   const auctionDuration = 1 * 24 * 60 * 60; // days
-  const auctionStartPrice = 1000;
-  const auctionEndPrice = 200;
+  const auctionStartPrice = hre.ethers.utils.formatUnits(0.2, 'ether');
+  const auctionEndPrice = hre.ethers.utils.formatUnits(0.1, 'ether');
   const priceDropInterval = 15 * 60; // minutes
   const royaltyNumerator = 1000; // out of 10000
 
