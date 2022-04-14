@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
   import LoaderButton from './parts/LoaderButton.svelte';
   import nifty from './niftyInstance';
   import mintCount from './stores/mintCount';
+
+  export let onMintSuccess: (txnHash: string) => void;
 
   let isLoading = false;
   let numToMint = 1;
@@ -15,7 +17,7 @@
 
     const txnHash = await nifty.mint(numToMint);
 
-    console.log('THE TRANSACTION HASH!!', txnHash);
+    onMintSuccess(txnHash);
   };
 </script>
 

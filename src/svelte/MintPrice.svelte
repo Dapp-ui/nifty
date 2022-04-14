@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
   import mintCount from './stores/mintCount';
+  import nifty from './niftyInstance';
 
   let count = 1;
 
@@ -7,11 +8,14 @@
     count = value;
   });
 
-  let price = 10;
+  const pricePromise = nifty.mintPrice('ether');
 </script>
 
 <div class="mintPrice">
-  {count * price} ETH + Gas
+  {#await pricePromise then price}
+    {(count * 100000 * parseFloat(price)) / 100000}
+  {/await}
+  ETH + Gas
 </div>
 
 <style>
