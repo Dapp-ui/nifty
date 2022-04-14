@@ -158,6 +158,17 @@ class Nifty {
     const address = await this.walletConnector.connectWallet(walletType);
     this.provider = this.walletConnector.getProvider();
 
+    if (!isWriteProvider(this.provider)) {
+      throw new Error('Connected wallet has no signer');
+    }
+
+    // redeclare contract with signer
+    this.contract = new ethers.Contract(
+      this.contractAddress,
+      abi,
+      this.provider.getSigner()
+    ) as NiftyContract;
+
     return address;
   }
 

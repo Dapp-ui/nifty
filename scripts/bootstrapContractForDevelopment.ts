@@ -68,6 +68,7 @@ async function main() {
 
   // Add testers to allowlist
   await instance.setMultipleAllowListAddresses([receiver1, receiver2], 4);
+  await instance.setSaleLive(true);
 }
 
 main()
