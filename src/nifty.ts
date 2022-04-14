@@ -3,6 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 import isWriteProvider from './utils/isWriteProvider';
+import WalletConnector, { WalletType } from './WalletConnector';
 import type { Nifty as NiftyContract } from '../typechain-types';
 
 interface NFT {
@@ -15,6 +16,7 @@ class Nifty {
   private contract: NiftyContract;
   private provider: ethers.providers.Provider;
   private network: Network;
+  private walletConnector: WalletConnector;
 
   constructor(
     network: Network,
@@ -25,6 +27,7 @@ class Nifty {
     if (typeof window !== 'undefined') {
       // @ts-ignore - TODO remove this ignore
       window.ethers = ethers;
+      this.walletConnector = new WalletConnector(network);
     }
 
     this.contractAddress = contractAddress;
@@ -149,6 +152,10 @@ class Nifty {
     });
 
     return await Promise.all(ownedNFTPromises);
+  }
+
+  public async connectWallet(walletType: WalletType): Promise<string> {
+    return this.walletConnector.connectWallet(walletType);
   }
 }
 

@@ -3,7 +3,7 @@ import type { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers, Wallet } from 'ethers';
 import isWriteProvider from './utils/isWriteProvider';
 
-type WalletType = 'metamask' | 'coinbase';
+export type WalletType = 'metamask' | 'coinbase';
 
 declare global {
   interface Window {
@@ -38,7 +38,7 @@ class WalletConnector {
     return null;
   }
 
-  public async connectWallet(walletType): Promise<string> {
+  public async connectWallet(walletType: WalletType): Promise<string> {
     this.walletType = walletType;
 
     const windowProvider = this._getProvider();

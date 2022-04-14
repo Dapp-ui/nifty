@@ -1,4 +1,3 @@
-
 echo "Setting up Hardhat Network";
 
 CURL_OUTPUT="";
@@ -14,4 +13,7 @@ done
 
 echo "Hardhat network is up!";
 
-env TS_NODE_PROJECT="tsconfig.testing.json" hardhat test test/lib/* --network localhost;
+env TS_NODE_PROJECT="tsconfig.svelte.json" webpack-dev-server --config webpack.svelte.config.js;
+
+kill -9 $HARDHAT_NODE_PROCESS;
+echo "Hardhat network has been shut down";

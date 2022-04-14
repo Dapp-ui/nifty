@@ -1,10 +1,34 @@
-<!-- Content.svelte -->
 <script lang="ts">
   import WalletChooserTile from './WalletChooserTile.svelte';
+  import shortenAddress from '../utils/shortenAddress';
+  import { getContext } from 'svelte';
+  import nifty from './niftyInstance';
+  import type { WalletType } from '../WalletConnector';
+  import connectedAddressStore from './stores/connectedAddress';
 
-  let chosenId = '';
-  const handleWalletChoose = (id: string) => {
-    chosenId = id;
+  let loadingWalletId = '';
+  let connectedWalletAddress = '';
+
+  const { close } = getContext('simple-modal');
+
+  const handleWalletChoose = (id: WalletType) => {
+    loadingWalletId = id;
+
+    nifty
+      .connectWallet(id)
+      .then((address) => {
+        loadingWalletId = '';
+        connectedWalletAddress = address;
+        connectedAddressStore.set(address);
+
+        setTimeout(() => {
+          close();
+        }, 2000);
+      })
+      .catch((e) => {
+        // TODO - handle the error
+        console.log('AN ERROR OCCURED: ', e);
+      });
   };
 
   const wallets = [
@@ -25,23 +49,46 @@
 
 <div class="chooseWalletList">
   {#each wallets as wallet}
-    {#if chosenId === wallet.walletId || chosenId === ''}
+    {#if (loadingWalletId === wallet.walletId || !loadingWalletId) && !connectedWalletAddress}
       <WalletChooserTile
         {...wallet}
         onChoose={handleWalletChoose}
-        loading={chosenId === wallet.walletId}
+        loading={loadingWalletId === wallet.walletId}
       />
     {/if}
   {/each}
+
+  {#if connectedWalletAddress !== ''}
+    <div class="center">
+      <img
+        style="margin-bottom: 30px;"
+        class="check"
+        alt="check mark"
+        src="https://storage.googleapis.com/niftyjs/check.png"
+      />
+      <div class="bottomText">
+        <span
+          >Successfully connected wallet <br />
+          {shortenAddress(connectedWalletAddress)}</span
+        >
+      </div>
+    </div>
+  {/if}
 </div>
 
-{#if chosenId !== ''}
-  <div class="waitingDisplay">
-    <span>Waiting For Connection...</span>
+{#if loadingWalletId !== ''}
+  <div class="bottomText">
+    <span>Waiting for Connection...</span>
   </div>
 {/if}
 
 <style>
+  .center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .chooseWalletList {
     justify-content: space-around;
     display: flex;
@@ -51,7 +98,12 @@
     padding: 0px 20px;
   }
 
-  .waitingDisplay {
+  .check {
+    width: 120px;
+    height: 120px;
+  }
+
+  .bottomText {
     width: 100%;
     text-align: center;
   }
