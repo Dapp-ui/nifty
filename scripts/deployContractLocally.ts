@@ -47,7 +47,7 @@ async function main() {
   let receiver1 = process.env.TESTER_1;
   let receiver2 = process.env.TESTER_2;
 
-  let amountInEther = '1.0';
+  let amountInEther = '4.0';
 
   let tx1 = {
     to: receiver1,
