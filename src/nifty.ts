@@ -157,6 +157,14 @@ class Nifty {
   public async connectWallet(walletType: WalletType): Promise<string> {
     return this.walletConnector.connectWallet(walletType);
   }
+
+  public getConnectedAddress(): string | null {
+    if (!this.walletConnector) {
+      return null;
+    }
+
+    return this.walletConnector.getConnectedAddress();
+  }
 }
 
 export default Nifty;

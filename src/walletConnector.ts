@@ -16,6 +16,7 @@ class WalletConnector {
   private walletType: WalletType;
   private provider: ethers.providers.Provider;
   private signer: ethers.Signer;
+  private connectedAddress: string | null;
 
   constructor(network: Network) {
     this.network = network;
@@ -64,7 +65,13 @@ class WalletConnector {
 
     this.signer = writeProvider.getSigner();
 
-    return await this.signer.getAddress();
+    this.connectedAddress = await this.signer.getAddress();
+
+    return this.connectedAddress;
+  }
+
+  public getConnectedAddress(): string | null {
+    return this.connectedAddress;
   }
 }
 
