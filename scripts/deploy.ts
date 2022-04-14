@@ -1,5 +1,7 @@
-import { utils } from 'ethers';
+import '@nomiclabs/hardhat-ethers';
 import * as hre from 'hardhat';
+
+const { ethers } = hre;
 
 var inquirer = require('inquirer');
 
@@ -7,7 +9,7 @@ const contractArgs = {
   mumbai: {
     Destructor: [],
     ChildTunnel: ['0xCf73231F28B7331BBe3124B907840A94851f9f11'],
-    NFTree: [
+    Nifty: [
       '0x5e7610698ba465973C11A607eAf43b7f1733D947', // wallet to withdraw to
       60, // max supply
       333, // allowList Price (wei)
@@ -21,11 +23,21 @@ const contractArgs = {
   goerli: {
     RootTunnel: ['0x2890bA17EfE978480615e330ecB65333b880928e'],
   },
-  hardhat: {
-    NFTree: [],
+  rinkeby: {
+    Nifty: [
+      '0x5e7610698ba465973C11A607eAf43b7f1733D947', // wallet to withdraw to
+      60, // max supply
+      ethers.utils.parseEther('.01'), // allowList Price (wei)
+      1 * 24 * 60 * 60, // auction duration (seconds)
+      ethers.utils.parseEther('.02'), // auction start price (wei)
+      ethers.utils.parseEther('.01'), // auction end price (wei)
+      10 * 60, // price drop interval (seconds)
+      1000, // royalty numerator out of 10000
+    ],
   },
+  hardhat: {},
   polygon: {
-    NFTree: [
+    Nifty: [
       '0xd54bFc7C30E41C1c362d7C1f5ff765CC16F4e9b3', // wallet to withdraw to
       60, // max supply
       ethers.utils.parseEther('333'), // allowList Price (wei)
@@ -38,7 +50,7 @@ const contractArgs = {
     Destructor: [],
   },
   local: {
-    NFTree: [],
+    Nifty: [],
   },
 };
 
@@ -63,7 +75,7 @@ function confirmDeploy(contractName, network, args) {
   });
 }
 
-function getContractName(network) {
+function getContractName(network): Promise<string> {
   return new Promise((resolve) => {
     inquirer
       .prompt([

@@ -15,6 +15,7 @@ const {
   MUMBAI_RPC_URL,
   POLYGON_RPC_URL,
   POLYGON_SCANNER_API_KEY,
+  RINKEBY_RPC_URL,
 } = process.env;
 
 module.exports = {
@@ -34,6 +35,10 @@ module.exports = {
     polygon: {
       url: POLYGON_RPC_URL,
       accounts: [MAINNET_CONTRACT_OWNER_PRIVATE_KEY],
+    },
+    rinkeby: {
+      url: RINKEBY_RPC_URL,
+      accounts: [TESTNET_CONTRACT_OWNER_PRIVATE_KEY],
     },
   },
   etherscan: {

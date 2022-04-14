@@ -1,4 +1,3 @@
-<!-- Content.svelte -->
 <script>
   import GenericButton from './parts/GenericButton.svelte';
   import { getContext } from 'svelte';

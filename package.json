@@ -8,7 +8,8 @@
     "build-ui": "webpack --config webpack.svelte.config.ts",
     "dev-ui": "bash ./scripts/runDevUI.sh",
     "test-contract": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" hardhat test test/contract/*",
-    "test-lib": "bash ./scripts/runLibTests.sh"
+    "test-lib": "bash ./scripts/runLibTests.sh",
+    "deploy": "hardhat run ./scripts/deploy.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
