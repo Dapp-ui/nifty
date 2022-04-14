@@ -1,4 +1,4 @@
-echo "Setting up Hardhat Network";
+echo "Setting up Hardhat Network!!";
 
 CURL_OUTPUT="";
 HARDHAT_NODE_READY_TEXT="jsonrpc";

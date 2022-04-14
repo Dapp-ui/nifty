@@ -19,10 +19,10 @@ async function main() {
 
   // ARGS
   const maxSupply = 10;
-  const allowListPrice = hre.ethers.utils.formatUnits(0.1, 'ether');
+  const allowListPrice = hre.ethers.utils.parseEther('0.1');
   const auctionDuration = 1 * 24 * 60 * 60; // days
-  const auctionStartPrice = hre.ethers.utils.formatUnits(0.2, 'ether');
-  const auctionEndPrice = hre.ethers.utils.formatUnits(0.1, 'ether');
+  const auctionStartPrice = hre.ethers.utils.parseEther('0.2');
+  const auctionEndPrice = hre.ethers.utils.parseEther('0.1');
   const priceDropInterval = 15 * 60; // minutes
   const royaltyNumerator = 1000; // out of 10000
 
@@ -67,7 +67,7 @@ async function main() {
   console.log('SENT 4 ETH TO ', receiver1, receiver2);
 
   // Add testers to allowlist
-  await instance.setMultipleAllowListAddresses([receiver1, receiver2], 10);
+  await instance.setMultipleAllowListAddresses([receiver1, receiver2], 4);
 }
 
 main()

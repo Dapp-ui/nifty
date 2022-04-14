@@ -155,7 +155,10 @@ class Nifty {
   }
 
   public async connectWallet(walletType: WalletType): Promise<string> {
-    return this.walletConnector.connectWallet(walletType);
+    const address = await this.walletConnector.connectWallet(walletType);
+    this.provider = this.walletConnector.getProvider();
+
+    return address;
   }
 
   public getConnectedAddress(): string | null {

@@ -73,6 +73,10 @@ class WalletConnector {
   public getConnectedAddress(): string | null {
     return this.connectedAddress;
   }
+
+  public getProvider(): ethers.providers.Provider {
+    return this.provider;
+  }
 }
 
 export default WalletConnector;
