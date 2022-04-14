@@ -67,7 +67,7 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
         allowListSize = newMax;
     }
 
-    function devMint(uint256 count) public onlyOwner {
+    function devMint(uint256 count) public payable onlyOwner {
         _mintMany(count);
     }
 

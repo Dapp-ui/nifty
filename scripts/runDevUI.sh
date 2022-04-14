@@ -13,7 +13,6 @@ done
 
 echo "Hardhat network is up!";
 
-env TS_NODE_PROJECT="tsconfig.svelte.json" webpack-dev-server --config webpack.svelte.config.js;
+yarn run hardhat run ./scripts/deployContractLocally.ts --network localhost
 
-kill -9 $HARDHAT_NODE_PROCESS;
-echo "Hardhat network has been shut down";
+env TS_NODE_PROJECT="tsconfig.svelte.json" webpack-dev-server --config webpack.svelte.config.js;

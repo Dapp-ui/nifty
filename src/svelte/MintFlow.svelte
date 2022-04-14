@@ -1,6 +1,6 @@
 <script lang="ts">
-  import MintButton from './MintButton';
+  import MintButton from './MintButton.svelte';
   import Modal from 'svelte-simple-modal';
 </script>
 
-<Modal classBg="bgBlur"><ConnectWalletButton /></Modal>
+<Modal classBg="bgBlur"><MintButton /></Modal>
