@@ -14,7 +14,11 @@
     <span />
     <span />
   </div>
-  <div class="content" style="padding: {borderWidth}px;">
+  <div
+    style="width: {width + 2 * borderWidth}px; height: {height +
+      2 * borderWidth}px;"
+    class="content"
+  >
     <slot>No children!</slot>
   </div>
 </div>
@@ -26,10 +30,12 @@
 
   .content {
     position: absolute;
-    width: 100%;
-    height: 100%;
     bottom: 0px;
     top: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* opacity: 0.1; */
   }
 
   .rotator {
@@ -49,14 +55,16 @@
   }
 
   span {
+    /* border: 1px solid red; */
     display: block;
     width: 100%;
-    height: 100%;
+    height: 200%;
     position: relative;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -75%);
   }
 
   span:after {
+    /* border: 1px solid green; */
     display: block;
     content: '';
     width: 100%;

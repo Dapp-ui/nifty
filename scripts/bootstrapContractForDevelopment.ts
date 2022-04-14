@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import * as hre from 'hardhat';
 import '@nomiclabs/hardhat-ethers';
+import type { Nifty } from '../typechain-types';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ async function main() {
   const priceDropInterval = 15 * 60; // minutes
   const royaltyNumerator = 1000; // out of 10000
 
-  const instance = await Contract.deploy(
+  const instance = (await Contract.deploy(
     deployer.address,
     maxSupply,
     allowListPrice,
@@ -34,7 +35,7 @@ async function main() {
     auctionEndPrice,
     priceDropInterval,
     royaltyNumerator
-  );
+  )) as Nifty;
   await instance.deployed();
 
   console.log(`Contract deployed to address ${instance.address}`);
@@ -63,13 +64,10 @@ async function main() {
   await wallet.sendTransaction(tx1);
   await wallet.sendTransaction(tx2);
 
-  console.log('SENT 1 ETH TO ', receiver1, receiver2);
+  console.log('SENT 4 ETH TO ', receiver1, receiver2);
 
-  const balance = await hre.ethers.provider.getBalance(
-    '0x5e7610698ba465973C11A607eAf43b7f1733D947'
-  );
-
-  console.log('THE BALANCE!!', balance);
+  // Add testers to allowlist
+  await instance.setMultipleAllowListAddresses([receiver1, receiver2], 10);
 }
 
 main()

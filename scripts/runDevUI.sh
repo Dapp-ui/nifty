@@ -13,6 +13,6 @@ done
 
 echo "Hardhat network is up!";
 
-yarn run hardhat run ./scripts/deployContractLocally.ts --network localhost
+yarn run hardhat run ./scripts/bootstrapContractForDevelopment.ts --network localhost
 
 env TS_NODE_PROJECT="tsconfig.svelte.json" webpack-dev-server --config webpack.svelte.config.js;

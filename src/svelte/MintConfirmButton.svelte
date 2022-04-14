@@ -1,7 +1,22 @@
 <script>
-  import GenericButton from './parts/GenericButton.svelte';
+  import LoaderButton from './parts/LoaderButton.svelte';
+  import nifty from './niftyInstance';
+  import mintCount from './stores/mintCount';
 
-  const confirmMint = () => {};
+  let isLoading = false;
+  let numToMint = 1;
+
+  mintCount.subscribe((value) => {
+    numToMint = value;
+  });
+
+  const confirmMint = async () => {
+    isLoading = true;
+
+    const txnHash = await nifty.mint(numToMint);
+
+    console.log('THE TRANSACTION HASH!!', txnHash);
+  };
 </script>
 
-<GenericButton handleClick={confirmMint} title={'Mint'} />
+<LoaderButton handleClick={confirmMint} title={'Mint'} {isLoading} />

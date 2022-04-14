@@ -3,9 +3,12 @@
   export let handleClick: () => void;
   export let title = 'Connect Wallet';
   export let styleType: StyleType = 'primary';
+  export let width;
+  export let height;
 </script>
 
 <button
+  style="width: {width}px; height: {height}px;"
   class={styleType === 'primary'
     ? 'connectButton primary'
     : 'connectButton secondary'}

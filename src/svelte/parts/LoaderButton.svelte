@@ -3,13 +3,17 @@
   import RotatorBorder from './RotatorBorder.svelte';
 
   export let isLoading = false;
-  export let loadingText = 'minting...';
+  export let loadingText = 'waiting...';
   export let title = 'Mint';
   export let handleClick;
+  export let width = 150;
+  export let height = 50;
 </script>
 
-<RotatorBorder>
+<RotatorBorder {width} {height} shouldShow={isLoading}>
   <GenericButton
+    {width}
+    {height}
     title={isLoading ? loadingText : title}
     {handleClick}
     styleType={isLoading ? 'secondary' : 'primary'}
