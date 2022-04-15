@@ -2,8 +2,8 @@ import Nifty from '../Nifty';
 
 // declare global nifty instance
 const nifty = new Nifty(
-  'hardhat',
-  '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+  'rinkeby',
+  '0x5B357E8178683c487b378c06Ad533bbbb4f938C6'
 );
 
 export default nifty;

@@ -1,4 +1,10 @@
-export type Network = 'mumbai' | 'goerli' | 'mainnet' | 'polygon' | 'hardhat';
+export type Network =
+  | 'mumbai'
+  | 'goerli'
+  | 'mainnet'
+  | 'polygon'
+  | 'hardhat'
+  | 'rinkeby';
 
 export type SaleState = 'closed' | 'openAuction' | 'openAllowlist' | 'soldOut';
 

@@ -12,6 +12,8 @@ const chainIdFromNetwork = (network: Network): string => {
       return '0x1';
     case 'hardhat':
       return '0x7A69';
+    case 'rinkeby':
+      return '0x4';
   }
 };
 

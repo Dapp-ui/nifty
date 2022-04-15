@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build-lib": "webpack --config webpack.lib.config.ts",
-    "build-ui": "webpack --config webpack.svelte.config.ts",
+    "build-ui": "webpack --config webpack.svelte.config.js",
     "dev-ui": "bash ./scripts/runDevUI.sh",
     "test-contract": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" hardhat test test/contract/*",
     "test-lib": "bash ./scripts/runLibTests.sh",
