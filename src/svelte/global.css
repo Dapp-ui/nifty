@@ -17,6 +17,11 @@ body {
   backdrop-filter: blur(4px);
 }
 
+.window {
+  width: 500px !important;
+  height: 450px !important;
+}
+
 hr {
   border-left: none;
   border-right: none;

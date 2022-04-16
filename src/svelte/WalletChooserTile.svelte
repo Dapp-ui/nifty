@@ -23,8 +23,8 @@
 <style>
   .walletChooserTile {
     outline: 1px solid black;
-    width: 150px;
-    height: 175px;
+    width: 130px;
+    height: 150px;
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -46,8 +46,8 @@
   }
 
   .walletTileImage {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
 
   .walletTileName {

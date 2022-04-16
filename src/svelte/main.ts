@@ -36,4 +36,24 @@ const errorText = new ErrorBanner({
   target: errorTarget,
 });
 
+var css = new CSSStyleSheet();
+// @ts-ignore
+css.replaceSync(`
+.bgBlur {
+  backdrop-filter: blur(4px);
+}
+
+.window {
+  width: 500px !important;
+  height: 450px !important;
+}
+`);
+
+// @ts-ignore
+walletConnector.shadowRoot.adoptedStyleSheets = [css];
+// @ts-ignore
+errorContainer.shadowRoot.adoptedStyleSheets = [css];
+// @ts-ignore
+mintButton.shadowRoot.adoptedStyleSheets = [css];
+
 export default { connectWallet, mint, errorText };
