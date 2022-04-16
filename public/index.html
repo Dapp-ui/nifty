@@ -8,18 +8,7 @@
     <link rel="stylesheet" href="/build/bundle.css" />
     <script>
       (function (params) {
-        function toDashed(camelCased) {
-          return camelCased.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-        }
-        const dataAttributeElement = document.createElement('div');
-        dataAttributeElement.id = 'niftyDataParams';
-        Object.keys(params).forEach((key) => {
-          dataAttributeElement.setAttribute(
-            `data-${toDashed(key)}`,
-            params[key]
-          );
-        });
-        document.body.appendChild(dataAttributeElement);
+        window.niftyParams = params;
       })({
         network: 'rinkeby',
         contractAddress: '0x5B357E8178683c487b378c06Ad533bbbb4f938C6',

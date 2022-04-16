@@ -5,6 +5,9 @@
   import connectedAddress from './stores/connectedAddress';
   import shortenAddress from '../utils/shortenAddress';
   const { open } = getContext('simple-modal');
+  import params from '../utils/params';
+
+  const { buttonBgColor, buttonTextColor } = params;
 
   const showPopUp = () => open(ConnectWalletPopup);
 
@@ -16,6 +19,8 @@
 </script>
 
 <GenericButton
+  textColor={buttonTextColor}
+  backgroundColor={buttonBgColor}
   handleClick={showPopUp}
   title={buttonTitle || 'Connect Wallet'}
 />

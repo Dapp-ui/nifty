@@ -7,10 +7,6 @@ export interface NiftyParams {
   buttonBgColor: string;
 }
 
-const toDashed = (camelCased: string) => {
-  return camelCased.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-};
-
 const defaultParams: NiftyParams = {
   network: 'rinkeby',
   contractAddress: '0x5B357E8178683c487b378c06Ad533bbbb4f938C6',
@@ -18,23 +14,19 @@ const defaultParams: NiftyParams = {
   buttonBgColor: '#000000',
 };
 
-const dataElement = document.getElementById('niftyDataParams');
+const paramsFromWindow = Object.keys(defaultParams).reduce((acc, key) => {
+  //@ts-ignore
+  const attribute = window.niftyParams[key];
 
-const paramsFromDataAttributes = Object.keys(defaultParams).reduce(
-  (acc, key) => {
-    const attribute = dataElement.getAttribute(`data-${toDashed(key)}`);
-
-    return {
-      ...acc,
-      [key]: attribute || defaultParams[key],
-    };
-  },
-  {}
-);
+  return {
+    ...acc,
+    [key]: attribute || defaultParams[key],
+  };
+}, {});
 
 const params: NiftyParams = {
   ...defaultParams,
-  ...paramsFromDataAttributes,
+  ...paramsFromWindow,
 };
 
 export default params;

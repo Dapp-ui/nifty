@@ -22,4 +22,9 @@
   };
 </script>
 
-<GenericButton handleClick={showPopUp} title={'Mint'} />
+<GenericButton
+  textColor={buttonTextColor}
+  backgroundColor={buttonBgColor}
+  handleClick={showPopUp}
+  title={'Mint'}
+/>

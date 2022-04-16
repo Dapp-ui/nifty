@@ -9,7 +9,7 @@
 </script>
 
 <button
-  style="width: {width}px; height: {height}px; color: {textColor}; background: {backgroundColor}: border: 1px solid {border}"
+  style="width: {width}px; height: {height}px; color: {textColor}; background: {backgroundColor}; border: 1px solid {border}"
   class={'genericButton'}
   on:click={handleClick}>{title}</button
 >

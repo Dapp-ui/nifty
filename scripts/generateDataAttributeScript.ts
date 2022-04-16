@@ -1,18 +1,8 @@
 const fs = require('fs');
 
-const appendParamsElement = function (params) {
-  function toDashed(camelCased) {
-    return camelCased.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-  }
-
-  const dataAttributeElement = document.createElement('div');
-  dataAttributeElement.id = 'niftyDataParams';
-
-  Object.keys(params).forEach((key) => {
-    dataAttributeElement.setAttribute(`data-${toDashed(key)}`, params[key]);
-  });
-
-  document.body.appendChild(dataAttributeElement);
+const setParams = function (params) {
+  // @ts-ignore
+  window.niftyParams = params;
 };
 
 const args = process.argv.slice(2);
@@ -22,7 +12,7 @@ const configStr = fs.readFileSync(args[0], { encoding: 'utf-8' });
 const script = `
 <script>
 (
-  ${appendParamsElement.toString()}
+  ${setParams.toString()}
 )(
   ${configStr}
 )
