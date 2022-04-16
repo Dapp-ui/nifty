@@ -139,3 +139,5 @@ artifacts
 cache
 typechain-types
 build
+
+scripts/param

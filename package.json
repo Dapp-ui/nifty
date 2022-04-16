@@ -6,10 +6,11 @@
   "scripts": {
     "build-lib": "webpack --config webpack.lib.config.ts",
     "build-ui": "webpack --config webpack.svelte.config.js",
+    "generate-embed-script": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" ts-node ./scripts/generateDataAttributeScript.ts",
     "dev-ui": "bash ./scripts/runDevUI.sh",
     "test-contract": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" hardhat test test/contract/*",
     "test-lib": "bash ./scripts/runLibTests.sh",
-    "deploy": "hardhat run ./scripts/deploy.ts"
+    "deploy-contract": "hardhat run ./scripts/deploy.ts"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",

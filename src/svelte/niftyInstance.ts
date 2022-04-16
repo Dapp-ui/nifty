@@ -1,9 +1,9 @@
 import Nifty from '../Nifty';
+import params from '../utils/params';
+
+const { network, contractAddress } = params;
 
 // declare global nifty instance
-const nifty = new Nifty(
-  'rinkeby',
-  '0x5B357E8178683c487b378c06Ad533bbbb4f938C6'
-);
+const nifty = new Nifty(network, contractAddress);
 
 export default nifty;
