@@ -4,6 +4,10 @@
   import MintPopUp from './MintPopUp.svelte';
   import nifty from './niftyInstance';
   import errorMessage from './stores/errorMessage';
+  import params from '../utils/params';
+
+  const { buttonBgColor, buttonTextColor } = params;
+
   const { open } = getContext('simple-modal');
 
   const showPopUp = () => {

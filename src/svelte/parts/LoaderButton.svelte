@@ -16,7 +16,9 @@
     {height}
     title={isLoading ? loadingText : title}
     {handleClick}
-    styleType={isLoading ? 'secondary' : 'primary'}
+    textColor={isLoading ? '#000' : '#fff'}
+    backgroundColor={isLoading ? '#fff' : '#000'}
+    border={isLoading ? '#000' : 'transparent'}
   />
 </RotatorBorder>
 

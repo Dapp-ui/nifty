@@ -6,10 +6,31 @@
 
     <title>Example Svelte App</title>
     <link rel="stylesheet" href="/build/bundle.css" />
+    <script>
+      (function (params) {
+        function toDashed(camelCased) {
+          return camelCased.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
+        }
+        const dataAttributeElement = document.createElement('div');
+        dataAttributeElement.id = 'niftyDataParams';
+        Object.keys(params).forEach((key) => {
+          dataAttributeElement.setAttribute(
+            `data-${toDashed(key)}`,
+            params[key]
+          );
+        });
+        document.body.appendChild(dataAttributeElement);
+      })({
+        network: 'rinkeby',
+        contractAddress: '0x5B357E8178683c487b378c06Ad533bbbb4f938C6',
+        buttonTextColor: '#000000',
+        buttonBgColor: '#ffffff',
+      });
+    </script>
     <script defer src="/build/bundle.js"></script>
   </head>
 
-  <body>
+  <body style="background: black">
     <div id="connectWalletButton"></div>
     <br />
     <br />

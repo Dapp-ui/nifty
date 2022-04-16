@@ -1,37 +1,25 @@
 <script lang="ts">
-  type StyleType = 'primary' | 'secondary';
   export let handleClick: () => void;
   export let title = 'Connect Wallet';
-  export let styleType: StyleType = 'primary';
   export let width;
   export let height;
+  export let textColor = '#ffffff';
+  export let backgroundColor = '#000000';
+  export let border = 'transparent';
 </script>
 
 <button
-  style="width: {width}px; height: {height}px;"
-  class={styleType === 'primary'
-    ? 'connectButton primary'
-    : 'connectButton secondary'}
+  style="width: {width}px; height: {height}px; color: {textColor}; background: {backgroundColor}: border: 1px solid {border}"
+  class={'genericButton'}
   on:click={handleClick}>{title}</button
 >
 
 <style>
-  .connectButton {
+  .genericButton {
     padding: 15px 30px;
     cursor: pointer;
     border: none;
     border-radius: 7px;
     font-size: 16px;
-  }
-
-  .primary {
-    background: black;
-    color: white;
-  }
-
-  .secondary {
-    color: black;
-    background: white;
-    border: 1px solid black;
   }
 </style>

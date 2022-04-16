@@ -9,7 +9,7 @@ const appendParamsElement = function (params) {
   dataAttributeElement.id = 'niftyDataParams';
 
   Object.keys(params).forEach((key) => {
-    dataAttributeElement.setAttribute(toDashed(key), params[key]);
+    dataAttributeElement.setAttribute(`data-${toDashed(key)}`, params[key]);
   });
 
   document.body.appendChild(dataAttributeElement);
