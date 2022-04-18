@@ -203,7 +203,7 @@ describe('TestNiftyContract', function () {
     await nifty.setAllowListAddress(owner.address, 2);
     await nifty.mint(2, { value: allowListPrice * 2 });
 
-    const numMinted = await nifty.numMinted();
+    const numMinted = await nifty.totalMinted();
 
     expect(numMinted).to.equal(2);
 

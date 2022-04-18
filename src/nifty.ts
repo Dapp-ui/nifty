@@ -125,7 +125,7 @@ class Nifty {
   }
 
   public async totalNumMinted(): Promise<number> {
-    return (await this.contract.numMinted()).toNumber();
+    return (await this.contract.totalMinted()).toNumber();
   }
 
   public async ownedNFTs(): Promise<NFT[]> {

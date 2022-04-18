@@ -203,7 +203,7 @@ contract Nifty is ERC721URIStorage, ERC2981, Ownable {
         return _allowList[allowLister];
     }
 
-    function numMinted() public view returns (uint256) {
+    function totalMinted() public view returns (uint256) {
         return _tokenIds.current();
     }
 
