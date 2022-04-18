@@ -5,6 +5,8 @@
   import nifty from './niftyInstance';
   import type { WalletType } from '../WalletConnector';
   import connectedAddressStore from './stores/connectedAddress';
+  import { parseWalletConnectError } from '../utils/errorHandlers';
+  import errMessage from './stores/errorMessage';
 
   let loadingWalletId = '';
   let connectedWalletAddress = '';
@@ -26,8 +28,11 @@
         }, 2000);
       })
       .catch((e) => {
-        // TODO - handle the error
-        console.log('AN ERROR OCCURED: ', e);
+        close();
+        const parsedErr = parseWalletConnectError(e);
+
+        console.log('PARSED: ', parsedErr);
+        errMessage.set(parsedErr);
       });
   };
 

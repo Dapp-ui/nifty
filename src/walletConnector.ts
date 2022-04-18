@@ -44,6 +44,10 @@ class WalletConnector {
 
     const windowProvider = this._getProvider();
 
+    if (!windowProvider) {
+      throw new Error('No ethereum detected on web page');
+    }
+
     const writeProvider = new ethers.providers.Web3Provider(
       windowProvider,
       parseInt(chainIdFromNetwork(this.network))
