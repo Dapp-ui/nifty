@@ -11,7 +11,7 @@
       timeout = setTimeout(() => {
         errorMessage.set({ humanReadableError: '', fullError: '' });
         timeout = null;
-      }, 3000);
+      }, 4000);
     }
   });
 

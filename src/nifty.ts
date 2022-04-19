@@ -1,10 +1,10 @@
-import type { CurrencyUnit, Network, SaleState } from './types';
+import { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers } from 'ethers';
 import abi from './abi';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 import isWriteProvider from './utils/isWriteProvider';
 import WalletConnector, { WalletType } from './WalletConnector';
-import type { Nifty as NiftyContract } from '../typechain-types';
+import type { Smokers as NiftyContract } from '../typechain-types';
 
 interface NFT {
   id: number;
@@ -46,10 +46,13 @@ class Nifty {
   }
 
   public async nextPriceDropTime(): Promise<number> {
+    // @ts-ignore
     const auctionStartSeconds = await this.contract.auctionStartAt();
     const auctionStart = auctionStartSeconds.mul(1000).toNumber();
 
+    // @ts-ignore
     const intervalSeconds = await this.contract.dutchAuctionPriceDropInterval();
+
     const interval = intervalSeconds.mul(1000).toNumber();
 
     const nextIntervalNum =
@@ -85,10 +88,13 @@ class Nifty {
     const saleState = await this.saleState();
 
     switch (saleState) {
-      case 'openAuction':
+      case SaleState.DUTCH_AUCTION:
+        // @ts-ignore
         return await this.contract.getAuctionPrice();
-      default:
+      case SaleState.ALLOW_LIST:
         return await this.contract.allowListPrice();
+      default:
+        return await this.contract.publicMintPrice();
     }
   }
 
@@ -99,25 +105,7 @@ class Nifty {
   }
 
   public async saleState(): Promise<SaleState> {
-    const numMinted = await this.contract.numMinted();
-    const maxSupply = await this.contract.maxSupply();
-
-    if (numMinted === maxSupply) {
-      return 'soldOut';
-    }
-
-    const isSaleOpen = await this.contract.isSaleLive();
-    const auctionStart = (await this.contract.auctionStartAt()).toNumber();
-
-    if (!isSaleOpen) {
-      return 'closed';
-    }
-
-    if (auctionStart > 0) {
-      return 'openAuction';
-    }
-
-    return 'openAllowlist';
+    return (await this.contract.saleState()).toNumber();
   }
 
   public async maxSupply(): Promise<number> {

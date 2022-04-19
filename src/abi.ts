@@ -7,6 +7,11 @@ export default [
         type: 'address',
       },
       {
+        internalType: 'address payable',
+        name: 'devWallet',
+        type: 'address',
+      },
+      {
         internalType: 'uint256',
         name: 'initialMaxSupply',
         type: 'uint256',
@@ -18,32 +23,82 @@ export default [
       },
       {
         internalType: 'uint256',
-        name: 'initialDutchAuctionDuration',
+        name: 'initialPublicMintPrice',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'initialDutchAuctionStartPrice',
+        name: 'devShare',
         type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'initialDutchAuctionEndPrice',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'initialDutchAuctionPriceDropInterval',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint96',
-        name: 'royalty',
-        type: 'uint96',
       },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'ApprovalCallerNotOwnerNorApproved',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ApprovalQueryForNonexistentToken',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ApprovalToCurrentOwner',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ApproveToCaller',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'BalanceQueryForZeroAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MintToZeroAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MintZeroQuantity',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'OwnerQueryForNonexistentToken',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TransferCallerNotOwnerNorApproved',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TransferFromIncorrectOwner',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TransferToNonERC721ReceiverImplementer',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TransferToZeroAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'URIQueryForNonexistentToken',
+    type: 'error',
   },
   {
     anonymous: false,
@@ -140,6 +195,49 @@ export default [
     type: 'event',
   },
   {
+    stateMutability: 'payable',
+    type: 'fallback',
+  },
+  {
+    inputs: [],
+    name: 'ALLOWLIST_SALE',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'CLOSED_SALE',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'PUBLIC_SALE',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'allOwners',
     outputs: [
@@ -166,19 +264,6 @@ export default [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'allowListSize',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
@@ -194,19 +279,6 @@ export default [
     name: 'approve',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'auctionStartAt',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -238,59 +310,7 @@ export default [
     ],
     name: 'devMint',
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'dutchAuctionDuration',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'dutchAuctionEndPrice',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'dutchAuctionPriceDropInterval',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'dutchAuctionStartPrice',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
+    stateMutability: 'payable',
     type: 'function',
   },
   {
@@ -307,19 +327,6 @@ export default [
         internalType: 'address',
         name: '',
         type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getAuctionPrice',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -351,28 +358,9 @@ export default [
   },
   {
     inputs: [],
-    name: 'isSaleLive',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'maxMintPerAddress',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
+    name: 'lockMaxSupply',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -383,6 +371,19 @@ export default [
         internalType: 'uint256',
         name: '',
         type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxSupplyLocked',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -435,19 +436,6 @@ export default [
   },
   {
     inputs: [],
-    name: 'numMinted',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'owner',
     outputs: [
       {
@@ -480,31 +468,8 @@ export default [
   },
   {
     inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_tokenId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_salePrice',
-        type: 'uint256',
-      },
-    ],
-    name: 'royaltyInfo',
+    name: 'publicMintPrice',
     outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
       {
         internalType: 'uint256',
         name: '',
@@ -512,6 +477,13 @@ export default [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -566,6 +538,19 @@ export default [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'saleState',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -578,7 +563,7 @@ export default [
         type: 'uint256',
       },
     ],
-    name: 'setAllowListAddress',
+    name: 'setAllowListEntries',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -592,19 +577,6 @@ export default [
       },
     ],
     name: 'setAllowListPrice',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'newMax',
-        type: 'uint256',
-      },
-    ],
-    name: 'setAllowListSize',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -630,51 +602,12 @@ export default [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'newPrice',
-        type: 'uint256',
-      },
-    ],
-    name: 'setAuctionEndPrice',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'newPrice',
-        type: 'uint256',
-      },
-    ],
-    name: 'setAuctionStartPrice',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'string',
         name: 'newBaseURI',
         type: 'string',
       },
     ],
     name: 'setBaseURI',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'maxMint',
-        type: 'uint256',
-      },
-    ],
-    name: 'setMaxMintPerAddress',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -705,7 +638,7 @@ export default [
         type: 'uint256',
       },
     ],
-    name: 'setMultipleAllowListAddresses',
+    name: 'setMultipleAllowListEntries',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -713,19 +646,25 @@ export default [
   {
     inputs: [
       {
-        internalType: 'bool',
-        name: 'isLive',
-        type: 'bool',
+        internalType: 'uint256',
+        name: 'newPrice',
+        type: 'uint256',
       },
     ],
-    name: 'setSaleLive',
+    name: 'setPublicMintPrice',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'startAuction',
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'nextSaleState',
+        type: 'uint256',
+      },
+    ],
+    name: 'setSaleState',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -782,6 +721,32 @@ export default [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'totalMinted',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -823,5 +788,9 @@ export default [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+  },
+  {
+    stateMutability: 'payable',
+    type: 'receive',
   },
 ];
