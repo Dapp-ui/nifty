@@ -22,8 +22,23 @@ class WalletConnector {
     this.network = network;
   }
 
-  _getProvider() {
-    // TODO - use wallet type here to get provider
+  _getCoinbaseProvider(): ethers.providers.ExternalProvider {
+    if (window.ethereum?.isCoinbaseWallet) {
+      return window.ethereum;
+    }
+
+    if (window.ethereum?.providers?.length > 0) {
+      for (let provider of window.ethereum.providers) {
+        if (provider.isCoinbaseWallet) {
+          return provider;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  _getMetamaskProvider(): ethers.providers.ExternalProvider {
     if (
       window.ethereum &&
       window.ethereum.isMetaMask &&
@@ -37,6 +52,15 @@ class WalletConnector {
     }
 
     return null;
+  }
+
+  _getProvider(): ethers.providers.ExternalProvider | null {
+    switch (this.walletType) {
+      case 'coinbase':
+        return this._getCoinbaseProvider();
+      default:
+        return this._getMetamaskProvider();
+    }
   }
 
   public async connectWallet(walletType: WalletType): Promise<string> {
