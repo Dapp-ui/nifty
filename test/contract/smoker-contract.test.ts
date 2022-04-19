@@ -19,9 +19,11 @@ describe('TestSmokersContract', function () {
   let nifty: Smokers;
   let owner: SignerWithAddress;
   let user1: SignerWithAddress;
+  let creator: SignerWithAddress;
+  let dev: SignerWithAddress;
 
   beforeEach(async function () {
-    [owner, user1] = await ethers.getSigners();
+    [owner, user1, creator, dev] = await ethers.getSigners();
 
     // reset the network to prevent tests from affecting each other
     await network.provider.send('hardhat_reset');
@@ -29,8 +31,8 @@ describe('TestSmokersContract', function () {
     const Nifty = await ethers.getContractFactory('Smokers');
 
     nifty = (await Nifty.deploy(
-      owner.address,
-      user1.address,
+      creator.address,
+      dev.address,
       maxSupply,
       allowListPrice,
       mintPrice,
@@ -120,21 +122,26 @@ describe('TestSmokersContract', function () {
     ).to.eventually.be.rejectedWith('Smokers: none left');
   });
 
-  it('should properly withdraw balance to external wallet', async function () {
-    await nifty.setAllowListEntries(owner.address, 10);
+  it('should properly withdraw balance and split value with dev', async function () {
+    await nifty.setAllowListEntries(owner.address, 1);
     await nifty.setSaleState(1);
 
     await nifty.mint(1, { value: allowListPrice });
 
-    const ogBalance = await waffle.provider.getBalance(user1.address);
+    const ogBalance = await waffle.provider.getBalance(creator.address);
 
     expect(ogBalance).to.equal(originalBalance);
 
     await nifty.withdraw();
 
-    const balance = await waffle.provider.getBalance(user1.address);
+    const creatorBalance = await waffle.provider.getBalance(creator.address);
+    const devBalance = await waffle.provider.getBalance(dev.address);
 
-    expect(balance).to.equal(originalBalance.add(allowListPrice));
+    expect(creatorBalance).to.equal(
+      originalBalance.add((allowListPrice * 19) / 20)
+    );
+
+    expect(devBalance).to.equal(originalBalance.add(allowListPrice / 20));
   });
 
   it('should support minting multiple NFTs via allowList', async function () {
@@ -223,5 +230,16 @@ describe('TestSmokersContract', function () {
     const allowListPrice = await nifty.allowListPrice();
 
     expect(allowListPrice).to.equal(220);
+  });
+
+  it('should allow minting via public mint', async function () {
+    await nifty.setSaleState(2);
+
+    await nifty.mint(1, {
+      value: mintPrice,
+    });
+
+    const ownerAddress = await nifty.ownerOf(1);
+    expect(ownerAddress).to.equal(owner.address);
   });
 });

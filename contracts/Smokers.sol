@@ -1,29 +1,23 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/common/ERC2981.sol";
-import "hardhat/console.sol";
 
-contract Smokers is ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-
+contract Smokers is ERC721A, Ownable {
     uint256 public constant CLOSED_SALE = 0;
     uint256 public constant ALLOWLIST_SALE = 1;
     uint256 public constant PUBLIC_SALE = 2;
 
     uint256 public saleState = CLOSED_SALE;
 
-    Counters.Counter private _tokenIds;
     mapping(address => uint256) private _allowList;
 
     address payable private _wallet;
     address payable private _devWallet;
 
     uint256 public maxSupply;
+    bool public maxSupplyLocked;
     uint256 public allowListPrice;
     uint256 public publicMintPrice;
 
@@ -38,7 +32,7 @@ contract Smokers is ERC721URIStorage, Ownable {
         uint256 initialAllowListPrice,
         uint256 initialPublicMintPrice,
         uint256 devShare
-    ) ERC721("The Stoners", "STONER") {
+    ) ERC721A("The Smokers", "SMOKER") {
         _wallet = wallet;
         _devWallet = devWallet;
         maxSupply = initialMaxSupply;
@@ -48,21 +42,13 @@ contract Smokers is ERC721URIStorage, Ownable {
         _devShare = devShare;
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
+    function _startTokenId() internal pure override returns (uint256) {
+        return 1;
     }
 
-    function devMint(uint256 count) public payable onlyOwner {
-        _mintMany(count);
-    }
-
-    function mint(uint256 count) public payable {
+    function mint(uint256 count) external payable {
         require(saleState != CLOSED_SALE, "Smokers: sale is closed");
+        require(totalSupply() + count <= maxSupply, "Smokers: none left");
 
         if (saleState == PUBLIC_SALE) {
             _mintFromPublicSale(count);
@@ -70,6 +56,11 @@ contract Smokers is ERC721URIStorage, Ownable {
         }
 
         _mintFromAllowList(count);
+    }
+
+    function devMint(uint256 count) public payable onlyOwner {
+        require(totalSupply() + count <= maxSupply, "Smokers: none left");
+        _safeMint(msg.sender, count);
     }
 
     function setBaseURI(string memory newBaseURI) public onlyOwner {
@@ -80,9 +71,17 @@ contract Smokers is ERC721URIStorage, Ownable {
         return baseURI;
     }
 
+    function lockMaxSupply() public onlyOwner {
+        maxSupplyLocked = true;
+    }
+
     function setMaxSupply(uint256 newMaxSupply) public onlyOwner {
         require(
-            newMaxSupply >= _tokenIds.current(),
+            !maxSupplyLocked,
+            "Smokers: cannot change max supply, it is locked"
+        );
+        require(
+            newMaxSupply >= _totalMinted(),
             "Smokers: cannot set max supply less than current minted supply"
         );
         maxSupply = newMaxSupply;
@@ -111,7 +110,7 @@ contract Smokers is ERC721URIStorage, Ownable {
 
         _allowList[_msgSender()] = numAllowedMints - count;
 
-        _mintMany(count);
+        _safeMint(msg.sender, count);
     }
 
     function _mintFromPublicSale(uint256 count) internal {
@@ -119,23 +118,7 @@ contract Smokers is ERC721URIStorage, Ownable {
             msg.value >= publicMintPrice * count,
             "Smokers: not enough funds sent"
         );
-        _mintMany(count);
-    }
-
-    function _mintMany(uint256 count) internal {
-        for (uint256 i = 0; i < count; i++) {
-            _mint();
-        }
-    }
-
-    function _mint() internal {
-        require(_tokenIds.current() < maxSupply, "Smokers: none left");
-        address recipient = _msgSender();
-
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
-
-        _safeMint(recipient, newItemId);
+        _safeMint(msg.sender, count);
     }
 
     function setSaleState(uint256 nextSaleState) public onlyOwner {
@@ -171,7 +154,7 @@ contract Smokers is ERC721URIStorage, Ownable {
     }
 
     function totalMinted() public view returns (uint256) {
-        return _tokenIds.current();
+        return _totalMinted();
     }
 
     function withdraw() public onlyOwner {
@@ -199,4 +182,9 @@ contract Smokers is ERC721URIStorage, Ownable {
 
         return _allOwners;
     }
+
+    // payable fallback
+    fallback() external payable {}
+
+    receive() external payable {}
 }
