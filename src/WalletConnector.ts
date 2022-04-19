@@ -38,17 +38,17 @@ class WalletConnector {
     return null;
   }
 
-  _getMetamaskProvider(): ethers.providers.ExternalProvider {
-    if (
-      window.ethereum &&
-      window.ethereum.isMetaMask &&
-      !window.ethereum.overrideIsMetaMask
-    ) {
+  _getMetaMaskProvider(): ethers.providers.ExternalProvider {
+    if (window.ethereum?.isMetaMask && !window.ethereum?.overrideIsMetaMask) {
       return window.ethereum;
     }
 
-    if (window.ethereum && window.ethereum.overrideIsMetaMask) {
-      return window.ethereum.providers[0];
+    if (window.ethereum?.providers?.length > 0) {
+      for (let provider of window.ethereum.providers) {
+        if (provider.isMetaMask) {
+          return provider;
+        }
+      }
     }
 
     return null;
@@ -59,7 +59,7 @@ class WalletConnector {
       case 'coinbase':
         return this._getCoinbaseProvider();
       default:
-        return this._getMetamaskProvider();
+        return this._getMetaMaskProvider();
     }
   }
 

@@ -34,6 +34,14 @@ const contractArgs = {
       10 * 60, // price drop interval (seconds)
       1000, // royalty numerator out of 10000
     ],
+    Smokers: [
+      '0x5e7610698ba465973C11A607eAf43b7f1733D947',
+      '0xb374D0d55a3e432aeF1745bD207C5Ef58C8c7FE8',
+      10000,
+      hre.ethers.utils.parseEther('0.0240'),
+      hre.ethers.utils.parseEther('0.0420'),
+      5,
+    ],
   },
   hardhat: {},
   polygon: {

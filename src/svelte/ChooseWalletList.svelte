@@ -13,27 +13,24 @@
 
   const { close } = getContext('simple-modal');
 
-  const handleWalletChoose = (id: WalletType) => {
-    loadingWalletId = id;
+  const handleWalletChoose = async (id: WalletType) => {
+    try {
+      loadingWalletId = id;
+      const address = await nifty.connectWallet(id);
+      loadingWalletId = '';
+      connectedWalletAddress = address;
+      connectedAddressStore.set(address);
 
-    nifty
-      .connectWallet(id)
-      .then((address) => {
-        loadingWalletId = '';
-        connectedWalletAddress = address;
-        connectedAddressStore.set(address);
-
-        setTimeout(() => {
-          close();
-        }, 2000);
-      })
-      .catch((e) => {
+      setTimeout(() => {
         close();
-        const parsedErr = parseWalletConnectError(e);
+      }, 2000);
+    } catch (e) {
+      loadingWalletId = '';
+      close();
 
-        console.log('PARSED: ', parsedErr);
-        errMessage.set(parsedErr);
-      });
+      const parsedErr = parseWalletConnectError(e);
+      errMessage.set(parsedErr);
+    }
   };
 
   const wallets = [

@@ -9,7 +9,7 @@
 </script>
 
 <div>
-  <RotatorBorder shouldShow={loading}>
+  <RotatorBorder shouldShow={loading} width={130} height={150}>
     <button
       class={loading ? 'walletChooserTile loading' : 'walletChooserTile'}
       on:click={() => onChoose(walletId)}

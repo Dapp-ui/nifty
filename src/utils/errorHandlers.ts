@@ -4,6 +4,7 @@ const defaultError = {
 };
 
 export const parseWalletConnectError = (e): typeof defaultError => {
+  console.log('CONNECT ERROR:', e);
   if (e.message === 'No ethereum detected on web page') {
     return {
       humanReadableError:
@@ -26,7 +27,7 @@ export const parseWalletConnectError = (e): typeof defaultError => {
 };
 
 export const parseMintError = (e): typeof defaultError => {
-  console.log('GOT THE ERROR!', e);
+  console.log('MINT ERROR:', e);
 
   if (
     e.data.message.indexOf('sender does not have enough allow list entries') !==
