@@ -140,6 +140,9 @@ async function main() {
   console.log('Attempting to deploy contract');
 
   const instance = await Contract.deploy(...args);
+
+  console.log('Deploy Txn Hash:', instance?.deployTransaction?.hash);
+
   await instance.deployed();
 
   console.log(`Contract ${contract} deployed to address ${instance.address}`);

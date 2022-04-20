@@ -13,7 +13,7 @@ const rpcUrlFromNetwork = (network: Network): string => {
     case 'rinkeby':
       return 'https://eth-rinkeby.alchemyapi.io/v2/mMJnSv1oY4dEumXcmf4PahuUZRN_mOlW';
     case 'mainnet':
-      return '';
+      return 'https://eth-mainnet.alchemyapi.io/v2/CwVBW1_D3Q-PIzkEXecoFvYT5eIF6tlB';
   }
 };
 
