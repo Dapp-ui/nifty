@@ -4,43 +4,45 @@ const defaultError = {
 };
 
 export const parseWalletConnectError = (e): typeof defaultError => {
-  console.log('CONNECT ERROR:', e);
-  if (e.message === 'No ethereum detected on web page') {
+  const message = e.message || e.data?.message || '';
+
+  if (message === 'No ethereum detected on web page') {
     return {
       humanReadableError:
         'No ethereum wallet detected, please use a browser with an ethereum wallet',
-      fullError: e.message,
+      fullError: message,
     };
   }
 
-  if (e.message === 'User rejected the request.') {
+  if (message === 'User rejected the request.') {
     return {
       humanReadableError: 'User rejected request, please try again',
-      fullError: e.message,
+      fullError: message,
     };
   }
 
   return {
     ...defaultError,
-    fullError: e.message,
+    fullError: message,
   };
 };
 
 export const parseMintError = (e): typeof defaultError => {
-  console.log('MINT ERROR:', e);
+  const message = e.message || e.data?.message || '';
+
+  console.log('THE MESSAGE: ', message);
 
   if (
-    e.data.message.indexOf('sender does not have enough allow list entries') !==
-    -1
+    message.indexOf('sender does not have enough allow list entries') !== -1
   ) {
     return {
       humanReadableError: 'user not on the allowlist, cannot mint',
-      fullError: e.data.message,
+      fullError: message,
     };
   }
 
   return {
     ...defaultError,
-    fullError: e.message,
+    fullError: message,
   };
 };

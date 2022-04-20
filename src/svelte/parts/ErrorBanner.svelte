@@ -1,5 +1,6 @@
 <script lang="ts">
   import errorMessage from '../stores/errorMessage';
+  import GlobalStyles from './GlobalStyles.svelte';
 
   let errorText;
   let timeout;
@@ -32,6 +33,8 @@
     </div>
   </div>
 </div>
+
+<GlobalStyles />
 
 <style>
   .errorText {

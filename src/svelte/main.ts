@@ -12,9 +12,9 @@ document.body.appendChild(errorContainer);
 const walletConnector = document.getElementById('connectWalletButton');
 const mintButton = document.getElementById('mintButton');
 
-const connectorShadow = walletConnector.attachShadow({ mode: 'open' });
-const mintShadow = mintButton.attachShadow({ mode: 'open' });
-const errorShadow = errorContainer.attachShadow({ mode: 'open' });
+const connectorShadow = walletConnector.attachShadow({ mode: 'closed' });
+const mintShadow = mintButton.attachShadow({ mode: 'closed' });
+const errorShadow = errorContainer.attachShadow({ mode: 'closed' });
 
 const walletConnectTarget = document.createElement('div');
 const mintButtonTarget = document.createElement('div');
@@ -35,25 +35,5 @@ const mint = new MintFlow({
 const errorText = new ErrorBanner({
   target: errorTarget,
 });
-
-var css = new CSSStyleSheet();
-// @ts-ignore
-css.replaceSync(`
-.bgBlur {
-  backdrop-filter: blur(4px);
-}
-
-.window {
-  width: 500px !important;
-  height: 450px !important;
-}
-`);
-
-// @ts-ignore
-walletConnector.shadowRoot.adoptedStyleSheets = [css];
-// @ts-ignore
-errorContainer.shadowRoot.adoptedStyleSheets = [css];
-// @ts-ignore
-mintButton.shadowRoot.adoptedStyleSheets = [css];
 
 export default { connectWallet, mint, errorText };
