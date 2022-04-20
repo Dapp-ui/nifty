@@ -1,6 +1,7 @@
 <style>
   :global(div) {
     font-family: 'Roboto', Roboto, sans-serif;
+    line-height: normal;
   }
 
   :global(.bgBlur) {
@@ -10,5 +11,9 @@
   :global(.window) {
     width: 500px !important;
     height: 450px !important;
+  }
+
+  :global(h1) {
+    font-weight: 700;
   }
 </style>

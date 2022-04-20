@@ -17,5 +17,6 @@
   }
   .popupWrapper {
     padding: 10px 30px;
+    max-height: 400px;
   }
 </style>
