@@ -141,3 +141,4 @@ typechain-types
 build
 
 scripts/param
+scripts/generated

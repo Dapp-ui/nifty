@@ -16,4 +16,14 @@
   :global(h1) {
     font-weight: 700;
   }
+
+  :global(hr) {
+    border-left: none;
+    border-bottom: none;
+    border-right: none;
+  }
+
+  :global(button) {
+    cursor: pointer;
+  }
 </style>
