@@ -1,6 +1,7 @@
 <script lang="ts">
   import nifty from './niftyInstance';
   export let withLabel = true;
+  export let textColor = '#000';
   type CountInfo = { numMinted: number; maxSupply: number };
 
   const getMintedDetails = async (): Promise<CountInfo> => {
@@ -25,7 +26,7 @@
     <span>Total Minted</span>
     <hr />
   {/if}
-  <div class="counts">
+  <div class="counts" style="color: {textColor}">
     {#await countInfo then { numMinted, maxSupply }}
       <span>{numMinted}</span>
       <span>/</span>
