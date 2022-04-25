@@ -13,7 +13,7 @@
             <div class="row">
               <InlineImageItem imgUrl="/images/test.jpg" />We are
               <br class="mobileDisplay" />
-              JuiceLabs
+              Juice&nbsp;Labs
               <InlineImageItem imgUrl="/images/test.jpg" />
             </div>
             We Help Creators Launch NFTs<br />
@@ -34,7 +34,7 @@
         <div class="ctaWrapper">
           <RocketSlash />
 
-          <a href="https://discord.com" target="_blank"
+          <a href="https://discord.gg/zfEfeaBK" target="_blank"
             ><div class="skew">Get Started</div></a
           >
           <RocketSlash />
