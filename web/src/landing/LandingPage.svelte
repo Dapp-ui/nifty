@@ -13,10 +13,10 @@
             <div class="row">
               <InlineImageItem imgUrl="/images/test.jpg" />We are
               <br class="mobileDisplay" />
-              Juice&nbsp;Labs
+              Juice&nbsp;Labs.
               <InlineImageItem imgUrl="/images/test.jpg" />
             </div>
-            We Help Creators Launch NFTs<br />
+            We Help Creators Sell NFTs<br />
             On their
             <u>Own</u>
             Website and Contract.<br />
@@ -98,8 +98,8 @@
   .innerBorder {
     border: 15px solid #1f271b;
     background: white;
-    width: calc(100vw - 70px);
-    height: calc(100vh - 70px);
+    width: calc(100% - 70px);
+    height: calc(100% - 70px);
     overflow: hidden;
   }
 
