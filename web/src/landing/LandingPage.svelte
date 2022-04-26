@@ -102,8 +102,8 @@
   }
 
   .innerBorder {
-    border: 15px solid #1f271b;
     background: white;
+    border: 15px solid #1f271b;
     width: calc(100% - 70px);
     height: calc(100% - 70px);
     overflow: hidden;
@@ -170,6 +170,12 @@
     h1 {
       font-size: 30px;
       line-height: 38px;
+    }
+
+    .innerBorder {
+      border: 7px solid #1f271b;
+      width: calc(100% - 40px);
+      height: calc(100% - 40px);
     }
 
     a {
