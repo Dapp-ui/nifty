@@ -11,20 +11,20 @@
         <div class="header">
           <h1>
             <div class="row">
-              <InlineImageItem imgUrl="/images/test.jpg" />We are
-              <br class="mobileDisplay" />
+              <InlineImageItem imgUrl="/images/test.jpg" />We&nbsp;are
               Juice&nbsp;Labs.
               <InlineImageItem imgUrl="/images/test.jpg" />
             </div>
-            We Help Creators Sell NFTs<br />
-            On their
+            <br class="mobileShown" />
+            We&nbsp;Help&nbsp;Creators Sell&nbsp;NFTs<br class="mobileHidden" />
+            <span class="lowerMobile">On</span> their
             <u>Own</u>
-            Website and Contract.<br />
+            Website and Contract.<br /><br class="mobileShown" />
             <div class="row">
               <InlineImageItem
                 animation="scroll"
                 imgUrl="/images/test2.jpg"
-              />No Code <br class="mobileDisplay" />Required.<InlineImageItem
+              />No&nbsp;Code Required.<InlineImageItem
                 animation="scroll"
                 imgUrl="/images/test2.jpg"
               />
@@ -52,10 +52,6 @@
     flex-wrap: wrap;
     word-wrap: break-word;
     align-items: center;
-  }
-
-  .mobileDisplay {
-    display: none;
   }
 
   .ctaWrapper {
@@ -158,18 +154,30 @@
     }
   }
 
+  .mobileShown {
+    display: none;
+  }
+
   @media only screen and (max-width: 700px) {
     h1 {
-      font-size: 34px;
-      line-height: 43px;
-    }
-
-    .mobileDisplay {
-      display: block;
+      font-size: 30px;
+      line-height: 38px;
     }
 
     a {
       font-size: 18px;
+    }
+
+    .mobileHidden {
+      display: none;
+    }
+
+    .mobileShown {
+      display: block;
+    }
+
+    .lowerMobile {
+      text-transform: lowercase;
     }
   }
 </style>

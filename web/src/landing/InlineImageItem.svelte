@@ -105,9 +105,12 @@
       border: 3px solid #1f271b;
       display: flex;
     }
+  }
 
+  @media only screen and (max-width: 450px) {
     .inlineImageWrapper {
       padding: 0px;
+      margin-top: -25px;
     }
   }
 </style>
