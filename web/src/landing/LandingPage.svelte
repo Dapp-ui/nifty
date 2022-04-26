@@ -2,10 +2,20 @@
   import { juiceOrange } from '../globalStyles';
   import InlineImageItem from './InlineImageItem.svelte';
   import RocketSlash from './RocketSlash.svelte';
+
+  const convertStyle = () => {
+    const height = window.innerHeight;
+    const el = document.getElementById('outerBorder');
+
+    el.style.height = `${height}px`;
+  };
+
+  window.addEventListener('resize', convertStyle);
+  window.addEventListener('DOMContentLoaded', convertStyle);
 </script>
 
 <main>
-  <div class="outerBorder" style="background: {juiceOrange}">
+  <div id="outerBorder" class="outerBorder" style="background: {juiceOrange}">
     <div class="innerBorder">
       <div class="mainSection">
         <div class="header">
@@ -109,10 +119,8 @@
   }
 
   .outerBorder {
-    backdrop-filter: blur(5px);
     z-index: -1;
     width: 100vw;
-    height: 100vh;
     top: 0px;
     right: 0px;
     left: 0px;
