@@ -27,4 +27,5 @@
   backgroundColor={buttonBgColor}
   handleClick={showPopUp}
   title={'Mint'}
+  customStyles={params.mintButtonCustomStyles}
 />

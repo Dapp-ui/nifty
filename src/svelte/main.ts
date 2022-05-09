@@ -3,14 +3,15 @@ import './global.css';
 import ConnectWallet from './ConnectWalletFlow.svelte';
 import MintFlow from './MintFlow.svelte';
 import ErrorBanner from './parts/ErrorBanner.svelte';
+import params from '../utils/params';
 
 // error container
 const errorContainer = document.createElement('div');
 document.body.appendChild(errorContainer);
 
 // find all handles
-const walletConnector = document.getElementById('connectWalletButton');
-const mintButton = document.getElementById('mintButton');
+const walletConnector = document.querySelector(params.connectButtonSelector);
+const mintButton = document.querySelector(params.mintButtonSelector);
 
 const connectorShadow = walletConnector.attachShadow({ mode: 'closed' });
 const mintShadow = mintButton.attachShadow({ mode: 'closed' });
