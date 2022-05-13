@@ -51,6 +51,7 @@ module.exports = {
     apiKey: {
       polygon: POLYGON_SCANNER_API_KEY,
       mainnet: MAINNET_SCANNER_API_KEY,
+      rinkeby: MAINNET_SCANNER_API_KEY,
     },
   },
 };
