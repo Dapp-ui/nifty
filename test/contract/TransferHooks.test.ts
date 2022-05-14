@@ -1,17 +1,17 @@
 const {
   getSelectors,
   FacetCutAction,
-} = require("../scripts/libraries/diamond.js");
-require("@nomiclabs/hardhat-waffle");
+} = require('../../scripts/libraries/diamond.js');
+import '@nomiclabs/hardhat-waffle';
 
-const { deployDiamond } = require("../scripts/deploy.js");
+const { deployDiamond } = require('../../scripts/deployDiamondSaw.js');
 
-const { assert, expect } = require("chai");
-const { ethers } = require("hardhat");
+const { assert, expect } = require('chai');
+import { ethers } from 'hardhat';
 
-const cutAbi = require("../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json");
+const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
 
-describe("AccessControlTest", async function () {
+describe('AccessControlTest', async function () {
   let diamondAddress,
     initCallData,
     sawInstance,
@@ -27,19 +27,19 @@ describe("AccessControlTest", async function () {
     sawInstance = data.sawInstance;
     baseNFTFacetImplementation = data.baseNFTFacetImplementation;
     baseNFTFacetInstance = await ethers.getContractAt(
-      "BaseNFTFacet",
+      'BaseNFTFacet',
       diamondAddress
     );
     accounts = await ethers.getSigners();
     contractOwner = accounts[0];
   });
 
-  it("Should reject set transfer hooks (both before and after) if the contracts are not registered with the saw", async () => {
+  it('Should reject set transfer hooks (both before and after) if the contracts are not registered with the saw', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("should appropriatly call transfer hooks on token transfer", async () => {
+  it('should appropriatly call transfer hooks on token transfer', async () => {
     // TODO -
     expect(false).to.equal(true);
   });

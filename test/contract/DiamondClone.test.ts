@@ -1,17 +1,17 @@
 const {
   getSelectors,
   FacetCutAction,
-} = require("../scripts/libraries/diamond.js");
-require("@nomiclabs/hardhat-waffle");
+} = require('../../scripts/libraries/diamond.js');
+import '@nomiclabs/hardhat-waffle';
 
-const { deployDiamond } = require("../scripts/deploy.js");
+const { deployDiamond } = require('../../scripts/deployDiamondSaw.js');
 
-const { assert, expect } = require("chai");
-const { ethers } = require("hardhat");
+const { assert, expect } = require('chai');
+import { ethers } from 'hardhat';
 
-const cutAbi = require("../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json");
+const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
 
-describe("DiamondTest", async function () {
+describe('DiamondTest', async function () {
   let diamondAddress,
     initCallData,
     sawInstance,
@@ -27,14 +27,14 @@ describe("DiamondTest", async function () {
     sawInstance = data.sawInstance;
     baseNFTFacetImplementation = data.baseNFTFacetImplementation;
     baseNFTFacetInstance = await ethers.getContractAt(
-      "BaseNFTFacet",
+      'BaseNFTFacet',
       diamondAddress
     );
     accounts = await ethers.getSigners();
     contractOwner = accounts[0];
   });
 
-  it("should emit a cut event as expected initially, and facets should match the cut event", async () => {
+  it('should emit a cut event as expected initially, and facets should match the cut event', async () => {
     const decodedEvents = await getDecodedEventsFromContract(
       baseNFTFacetInstance
     );
@@ -55,7 +55,7 @@ describe("DiamondTest", async function () {
     expect(args[2]).to.equal(initCallData);
   });
 
-  it("should emit a cut event after a secondary cut, and facets should be properly reflected", async () => {
+  it('should emit a cut event after a secondary cut, and facets should be properly reflected', async () => {
     const test1facet = await deployTest1Facet();
     const selectors = getSelectors(test1facet);
     const newCut = {
@@ -70,13 +70,13 @@ describe("DiamondTest", async function () {
     await sawInstance.addFacetPattern(
       [newCut],
       ethers.constants.AddressZero,
-      "0x"
+      '0x'
     );
 
     await baseNFTFacetInstance.diamondCut(
       [newCut],
       ethers.constants.AddressZero,
-      "0x",
+      '0x',
       { gasLimit: 800000 }
     );
 
@@ -93,10 +93,10 @@ describe("DiamondTest", async function () {
     expect(cut[0].action).to.equal(addAction);
     expect(cut[0].functionSelectors).to.have.same.members(selectors);
     expect(args[1]).to.equal(ethers.constants.AddressZero);
-    expect(args[2]).to.equal("0x");
+    expect(args[2]).to.equal('0x');
   });
 
-  it("Should reject non-additive cuts in the diamond saw", async () => {
+  it('Should reject non-additive cuts in the diamond saw', async () => {
     const test1facet = await deployTest1Facet();
     const selectors = getSelectors(test1facet);
 
@@ -110,7 +110,7 @@ describe("DiamondTest", async function () {
     await sawInstance.addFacetPattern(
       [newCut],
       ethers.constants.AddressZero,
-      "0x"
+      '0x'
     );
 
     // now try to remove it
@@ -118,12 +118,12 @@ describe("DiamondTest", async function () {
       sawInstance.addFacetPattern(
         [{ ...newCut, action: FacetCutAction.Remove }],
         ethers.constants.AddressZero,
-        "0x"
+        '0x'
       )
-    ).to.be.revertedWith("Only add action supported in saw");
+    ).to.be.revertedWith('Only add action supported in saw');
   });
 
-  it("Should reject an improper length of selectors passed to a cut", async () => {
+  it('Should reject an improper length of selectors passed to a cut', async () => {
     const test1facet = await deployTest1Facet();
     const selectors = getSelectors(test1facet);
     const newCut = {
@@ -136,22 +136,22 @@ describe("DiamondTest", async function () {
     await sawInstance.addFacetPattern(
       [newCut],
       ethers.constants.AddressZero,
-      "0x"
+      '0x'
     );
 
     await expect(
       baseNFTFacetInstance.diamondCut(
         [{ ...newCut, functionSelectors: selectors.slice(0, 5) }],
         ethers.constants.AddressZero,
-        "0x",
+        '0x',
         { gasLimit: 800000 }
       )
     ).to.be.revertedWith(
-      "You can only modify all selectors at once with diamond saw"
+      'You can only modify all selectors at once with diamond saw'
     );
   });
 
-  it("Should reject a cut with a facet address that the saw does not support", async () => {
+  it('Should reject a cut with a facet address that the saw does not support', async () => {
     const test1facet = await deployTest1Facet();
     const selectors = getSelectors(test1facet);
     const newCut = {
@@ -164,13 +164,13 @@ describe("DiamondTest", async function () {
       baseNFTFacetInstance.diamondCut(
         [newCut],
         ethers.constants.AddressZero,
-        "0x",
+        '0x',
         { gasLimit: 800000 }
       )
-    ).to.be.revertedWith("Facet is not supported by the saw");
+    ).to.be.revertedWith('Facet is not supported by the saw');
   });
 
-  it("Should reject duplicate selector additions to the saw", async () => {
+  it('Should reject duplicate selector additions to the saw', async () => {
     const selectors = getSelectors(baseNFTFacetImplementation);
     const newCut = {
       facetAddress: sawInstance.address,
@@ -179,24 +179,24 @@ describe("DiamondTest", async function () {
     };
 
     await expect(
-      sawInstance.addFacetPattern([newCut], ethers.constants.AddressZero, "0x")
-    ).to.be.revertedWith("Cannot add function that already exists");
+      sawInstance.addFacetPattern([newCut], ethers.constants.AddressZero, '0x')
+    ).to.be.revertedWith('Cannot add function that already exists');
   });
 
-  it("Should reject duplicate facet address additions to the saw", async () => {
+  it('Should reject duplicate facet address additions to the saw', async () => {
     const newCut = {
       facetAddress: baseNFTFacetImplementation.address,
       action: FacetCutAction.Add,
-      functionSelectors: ["0x12345678"],
+      functionSelectors: ['0x12345678'],
     };
 
     await expect(
-      sawInstance.addFacetPattern([newCut], ethers.constants.AddressZero, "0x")
-    ).to.be.revertedWith("Facet already exists in saw");
+      sawInstance.addFacetPattern([newCut], ethers.constants.AddressZero, '0x')
+    ).to.be.revertedWith('Facet already exists in saw');
   });
 
-  it("Should return appropriate ERC-165 interfaces set in the saw", async () => {
-    const interface = "0x12345678";
+  it('Should return appropriate ERC-165 interfaces set in the saw', async () => {
+    const interface = '0x12345678';
 
     const supported1 = await baseNFTFacetInstance.supportsInterface(interface);
     expect(supported1).to.equal(false);
@@ -210,57 +210,57 @@ describe("DiamondTest", async function () {
     expect(supported2).to.equal(true);
   });
 
-  it("should support removing an ERC-165 interface from a given facet", async () => {
+  it('should support removing an ERC-165 interface from a given facet', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("Should fail to set the ERC-165 interface if the facet is not supported in the saw", async () => {
+  it('Should fail to set the ERC-165 interface if the facet is not supported in the saw', async () => {
     expect(false).to.equal(true);
   });
 
-  it("should return the appropriate facet for a selector in the saw", async () => {
+  it('should return the appropriate facet for a selector in the saw', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("should reject call to an unsupported selector", async () => {
+  it('should reject call to an unsupported selector', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("should properly reflect the current facets and selectors in the saw read function after a facet addition", async () => {
+  it('should properly reflect the current facets and selectors in the saw read function after a facet addition', async () => {
     expect(false).to.equal(true);
   });
 
-  it("should reject a call in the clone to a removed facet selector", async () => {
+  it('should reject a call in the clone to a removed facet selector', async () => {
     expect(false).to.equal(true);
   });
 
-  it("Should properly reflect the current diamond clone facets in loupe", async () => {
+  it('Should properly reflect the current diamond clone facets in loupe', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("Should properly reflect the current diamond clone facets in loupe after a cut", async () => {
+  it('Should properly reflect the current diamond clone facets in loupe after a cut', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("Should emit an appropriate diamond cut event when the diamond saw is upgraded", async () => {
+  it('Should emit an appropriate diamond cut event when the diamond saw is upgraded', async () => {
     expect(false).to.equal(true);
   });
 
-  it("Should reject an upgrade if the upgrade saw is not set in the diamond saw", async () => {
+  it('Should reject an upgrade if the upgrade saw is not set in the diamond saw', async () => {
     expect(false).to.equal(true);
   });
 
-  it("Should allow for the same selectors in the new saw", async () => {
+  it('Should allow for the same selectors in the new saw', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("Should appropriately call the init function with an upgraded saw", async () => {
+  it('Should appropriately call the init function with an upgraded saw', async () => {
     expect(false).to.equal(true);
   });
 });

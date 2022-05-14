@@ -1,17 +1,17 @@
 const {
   getSelectors,
   FacetCutAction,
-} = require("../scripts/libraries/diamond.js");
-require("@nomiclabs/hardhat-waffle");
+} = require('../../scripts/libraries/diamond.js');
+import '@nomiclabs/hardhat-waffle';
 
-const { deployDiamond } = require("../scripts/deploy.js");
+const { deployDiamond } = require('../../scripts/deployDiamondSaw.js');
 
-const { assert, expect } = require("chai");
-const { ethers } = require("hardhat");
+const { assert, expect } = require('chai');
+import { ethers } from 'hardhat';
 
-const cutAbi = require("../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json");
+const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
 
-describe("DiamondTest", async function () {
+describe('DiamondTest', async function () {
   let diamondAddress,
     initCallData,
     sawInstance,
@@ -27,27 +27,27 @@ describe("DiamondTest", async function () {
     sawInstance = data.sawInstance;
     baseNFTFacetImplementation = data.baseNFTFacetImplementation;
     baseNFTFacetInstance = await ethers.getContractAt(
-      "BaseNFTFacet",
+      'BaseNFTFacet',
       diamondAddress
     );
     accounts = await ethers.getSigners();
     contractOwner = accounts[0];
   });
 
-  it("Should reject a cut during an immutability window", async () => {
+  it('Should reject a cut during an immutability window', async () => {
     expect(false).to.equal(true);
   });
 
-  it("Should reject a saw upgrade during an immutability window", async () => {
+  it('Should reject a saw upgrade during an immutability window', async () => {
     expect(false).to.equal(true);
   });
 
-  it("Should reject an update to the immutability window during an immutability window", async () => {
+  it('Should reject an update to the immutability window during an immutability window', async () => {
     // TODO -
     expect(false).to.equal(true);
   });
 
-  it("should allow updates after the immutability window is complete", async () => {
+  it('should allow updates after the immutability window is complete', async () => {
     // TODO -
     expect(false).to.equal(true);
   });

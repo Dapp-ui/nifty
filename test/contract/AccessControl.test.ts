@@ -1,17 +1,17 @@
 const {
   getSelectors,
   FacetCutAction,
-} = require("../scripts/libraries/diamond.js");
-require("@nomiclabs/hardhat-waffle");
+} = require('../../scripts/libraries/diamond.js');
+import '@nomiclabs/hardhat-waffle';
 
-const { deployDiamond } = require("../scripts/deploy.js");
+const { deployDiamond } = require('../../scripts/deployDiamondSaw.js');
 
-const { assert, expect } = require("chai");
-const { ethers } = require("hardhat");
+const { assert, expect } = require('chai');
+import { ethers } from 'hardhat';
 
-const cutAbi = require("../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json");
+const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
 
-describe("AccessControlTest", async function () {
+describe('AccessControlTest', async function () {
   let diamondAddress,
     initCallData,
     sawInstance,
@@ -27,31 +27,31 @@ describe("AccessControlTest", async function () {
     sawInstance = data.sawInstance;
     baseNFTFacetImplementation = data.baseNFTFacetImplementation;
     baseNFTFacetInstance = await ethers.getContractAt(
-      "BaseNFTFacet",
+      'BaseNFTFacet',
       diamondAddress
     );
     accounts = await ethers.getSigners();
     contractOwner = accounts[0];
   });
 
-  it("should gate owner or admin gated functions properly", async () => {
+  it('should gate owner or admin gated functions properly', async () => {
     // list out all owner / admin functions and test them here
     expect(false).to.equal(true);
   });
 
-  it("should only allow the owner to add or remove admins", async () => {
+  it('should only allow the owner to add or remove admins', async () => {
     expect(false).to.equal(true);
   });
 
-  it("should renounce both owners and admins on an ownership renounce", async () => {
+  it('should renounce both owners and admins on an ownership renounce', async () => {
     expect(false).to.equal(true);
   });
 
-  it("should allow ownership transfer by the current owner", async () => {
+  it('should allow ownership transfer by the current owner', async () => {
     expect(false).to.equal(true);
   });
 
-  it("should not allow admins to access owner functionality", async () => {
+  it('should not allow admins to access owner functionality', async () => {
     expect(false).to.equal(true);
   });
 });

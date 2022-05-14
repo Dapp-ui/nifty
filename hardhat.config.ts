@@ -3,10 +3,12 @@
  */
 require('dotenv').config();
 require('@nomiclabs/hardhat-ethers');
+require('@nomiclabs/hardhat-web3');
 require('@typechain/hardhat');
 require('hardhat-gas-reporter');
-require('@nomiclabs/hardhat-waffle');
+import '@nomiclabs/hardhat-waffle';
 require('@nomiclabs/hardhat-etherscan');
+require('hardhat-contract-sizer');
 
 const {
   TESTNET_CONTRACT_OWNER_PRIVATE_KEY,

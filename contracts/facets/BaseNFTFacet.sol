@@ -16,7 +16,13 @@ import {RoyaltyStandardFacet} from "./RoyaltyStandard/RoyaltyStandardFacet.sol";
 // Why inherit to one facet instead of deploying Each Facet Separately?
 // Because its cheaper for end customers to just store / cut one facet address
 
-contract BaseNFTFacet is SaleStateModifiers, AccessControlModifiers, AccessControlFacet, ERC721AFacet, PaymentSplitterFacet, RoyaltyStandardFacet {
+contract BaseNFTFacet is
+    SaleStateModifiers,
+    AccessControlModifiers,
+    AccessControlFacet,
+    ERC721AFacet,
+    RoyaltyStandardFacet
+{
     using Strings for uint256;
 
     function init() external {
@@ -56,7 +62,10 @@ contract BaseNFTFacet is SaleStateModifiers, AccessControlModifiers, AccessContr
     }
 
     function publicMint(uint256 quantity) public payable onlyAtSaleState(1) {
-        require(msg.value >= quantity * BaseNFTLib.mintPrice(), "Insufficient funds to mint");
+        require(
+            msg.value >= quantity * BaseNFTLib.mintPrice(),
+            "Insufficient funds to mint"
+        );
         BaseNFTLib._safeMint(msg.sender, quantity);
     }
 
@@ -76,14 +85,25 @@ contract BaseNFTFacet is SaleStateModifiers, AccessControlModifiers, AccessContr
         BaseNFTLib.setBaseURI(_baseURI);
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        if (!_exists(tokenId)) revert("Cannot Query tokenURI for non-existant tokenId");
-        string storage tokenURIFromStorage = URIStorageLib.tokenURIFromStorage(tokenId);
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        if (!_exists(tokenId))
+            revert("Cannot Query tokenURI for non-existant tokenId");
+        string storage tokenURIFromStorage = URIStorageLib.tokenURIFromStorage(
+            tokenId
+        );
         string storage baseURI = BaseNFTLib.baseNFTStorage().baseURI;
         // check first for URIStorage
         // then fall back on baseURI + tokenId
         return
-            bytes(tokenURIFromStorage).length != 0 ? tokenURIFromStorage : bytes(baseURI).length != 0
+            bytes(tokenURIFromStorage).length != 0
+                ? tokenURIFromStorage
+                : bytes(baseURI).length != 0
                 ? string(abi.encodePacked(baseURI, tokenId.toString()))
                 : "";
     }
