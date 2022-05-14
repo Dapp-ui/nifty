@@ -8,7 +8,7 @@
     "build-ui": "webpack --config webpack.svelte.config.js",
     "generate-embed-script": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" ts-node ./scripts/generateDataAttributeScript.ts",
     "dev-ui": "bash ./scripts/runDevUI.sh",
-    "test-contract": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" hardhat test test/contract/*",
+    "test-contract": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" hardhat test",
     "test-lib": "bash ./scripts/runLibTests.sh",
     "deploy-contract": "hardhat run ./scripts/deploy.ts"
   },
