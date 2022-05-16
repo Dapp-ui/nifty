@@ -11,4 +11,12 @@ contract URIStorageFacet is AccessControlModifiers {
     {
         URIStorageLib._setTokenURI(tokenId, _tokenURI);
     }
+
+    function setBaseURI(string memory _baseURI) public onlyOperator {
+        URIStorageLib.setBaseURI(_baseURI);
+    }
+
+    function lockMetadata() public onlyOwner {
+        URIStorageLib.lockMetadata();
+    }
 }

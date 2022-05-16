@@ -9,6 +9,7 @@ import {AccessControlModifiers, AccessControlLib} from "./AccessControl/AccessCo
 import {BaseNFTLib} from "./BaseNFTLib.sol";
 import {SaleStateModifiers} from "./BaseNFTModifiers.sol";
 import {URIStorageLib} from "./URIStorage/URIStorageLib.sol";
+import {URIStorageFacet} from "./URIStorage/URIStorageFacet.sol";
 import {PaymentSplitterFacet} from "./PaymentSplitter/PaymentSplitterFacet.sol";
 import {RoyaltyStandardFacet} from "./RoyaltyStandard/RoyaltyStandardFacet.sol";
 
@@ -21,10 +22,9 @@ contract BaseNFTFacet is
     AccessControlModifiers,
     BasicAccessControlFacet,
     ERC721AFacet,
-    RoyaltyStandardFacet
+    RoyaltyStandardFacet,
+    URIStorageFacet
 {
-    using Strings for uint256;
-
     function init() external {
         require(AccessControlLib.owner() == address(0), "Already initialized");
         AccessControlLib._transferOwnership(msg.sender);
@@ -57,10 +57,6 @@ contract BaseNFTFacet is
         BaseNFTLib.setSaleState(_saleState);
     }
 
-    function setBaseURI(string memory _baseURI) public onlyOwner {
-        BaseNFTLib.setBaseURI(_baseURI);
-    }
-
     function tokenURI(uint256 tokenId)
         public
         view
@@ -70,17 +66,7 @@ contract BaseNFTFacet is
     {
         if (!_exists(tokenId))
             revert("Cannot Query tokenURI for non-existant tokenId");
-        string storage tokenURIFromStorage = URIStorageLib.tokenURIFromStorage(
-            tokenId
-        );
-        string storage baseURI = BaseNFTLib.baseNFTStorage().baseURI;
-        // check first for URIStorage
-        // then fall back on baseURI + tokenId
-        return
-            bytes(tokenURIFromStorage).length != 0
-                ? tokenURIFromStorage
-                : bytes(baseURI).length != 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString()))
-                : "";
+
+        return URIStorageLib.tokenURI(tokenId);
     }
 }

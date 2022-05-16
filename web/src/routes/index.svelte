@@ -24,7 +24,7 @@
 				<div class="header">
 					<h1>
 						<div class="row">
-							<InlineImageItem imgUrl="/images/test.jpg" />We&nbsp;are Juice&nbsp;Labs.
+							<InlineImageItem imgUrl="/images/test.jpg" />Welcome&nbsp;to Juice.
 							<InlineImageItem imgUrl="/images/test.jpg" />
 						</div>
 						<br class="mobileShown" />
@@ -41,9 +41,7 @@
 				<div class="ctaWrapper">
 					<RocketSlash />
 
-					<a href="https://discord.gg/zfEfeaBK" target="_blank"
-						><div class="skew">Get Started</div></a
-					>
+					<a href="/app"><div class="skew">Try the App</div></a>
 					<RocketSlash />
 				</div>
 			</div>

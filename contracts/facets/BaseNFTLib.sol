@@ -7,7 +7,6 @@ import {ERC721ALib} from "./ERC721A/ERC721ALib.sol";
 library BaseNFTLib {
     struct BaseNFTStorage {
         uint256 saleState;
-        string baseURI;
     }
 
     function baseNFTStorage()
@@ -27,9 +26,5 @@ library BaseNFTLib {
 
     function setSaleState(uint256 _saleState) internal {
         baseNFTStorage().saleState = _saleState;
-    }
-
-    function setBaseURI(string memory _baseURI) internal {
-        baseNFTStorage().baseURI = _baseURI;
     }
 }
