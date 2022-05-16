@@ -9,7 +9,7 @@ body {
 
 @font-face {
   font-family: NunitoSans;
-  src: url('./NunitoSans/NunitoSans-SemiBold.ttf');
+  src: url('/NunitoSans/NunitoSans-SemiBold.ttf');
   font-weight: black;
 }
 
