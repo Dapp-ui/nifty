@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 
 import {ERC721AFacet, ERC721ALib} from "./ERC721A/ERC721AFacet.sol";
 import {Strings} from "./ERC721A/ERC721ALib.sol";
-import {AccessControlFacet} from "./AccessControl/AccessControlFacet.sol";
+import {BasicAccessControlFacet} from "./AccessControl/BasicAccessControlFacet.sol";
 import {AccessControlModifiers, AccessControlLib} from "./AccessControl/AccessControlModifiers.sol";
 import {BaseNFTLib} from "./BaseNFTLib.sol";
 import {SaleStateModifiers} from "./BaseNFTModifiers.sol";
@@ -19,7 +19,7 @@ import {RoyaltyStandardFacet} from "./RoyaltyStandard/RoyaltyStandardFacet.sol";
 contract BaseNFTFacet is
     SaleStateModifiers,
     AccessControlModifiers,
-    AccessControlFacet,
+    BasicAccessControlFacet,
     ERC721AFacet,
     RoyaltyStandardFacet
 {
@@ -45,39 +45,15 @@ contract BaseNFTFacet is
         }
     }
 
-    function setMaxSupply(uint256 _maxSupply) public onlyAdmin {
-        return BaseNFTLib.setMaxSupply(_maxSupply);
-    }
-
-    function maxSupply() public view returns (uint256) {
-        return BaseNFTLib.maxSupply();
-    }
-
-    function setMintPrice(uint256 _mintPrice) public onlyAdmin {
-        BaseNFTLib.setMintPrice(_mintPrice);
-    }
-
-    function mintPrice() public view {
-        BaseNFTLib.mintPrice();
-    }
-
-    function publicMint(uint256 quantity) public payable onlyAtSaleState(1) {
-        require(
-            msg.value >= quantity * BaseNFTLib.mintPrice(),
-            "Insufficient funds to mint"
-        );
-        BaseNFTLib._safeMint(msg.sender, quantity);
-    }
-
-    function devMint(address to, uint256 quantity) public payable onlyOwner {
-        BaseNFTLib._safeMint(to, quantity);
+    function devMint(address to, uint256 quantity) public payable onlyOperator {
+        ERC721ALib._safeMint(to, quantity);
     }
 
     function saleState() public view returns (uint256) {
         return BaseNFTLib.saleState();
     }
 
-    function setSaleState(uint256 _saleState) public onlyAdmin {
+    function setSaleState(uint256 _saleState) public onlyOperator {
         BaseNFTLib.setSaleState(_saleState);
     }
 

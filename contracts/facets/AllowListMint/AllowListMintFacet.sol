@@ -6,11 +6,17 @@ import {AccessControlModifiers} from "../AccessControl/AccessControlModifiers.so
 import {AllowListMintLib} from "./AllowListMintLib.sol";
 
 contract AllowListMintFacet is SaleStateModifiers, AccessControlModifiers {
-    function setAllowListAddress(address allowLister, uint256 amount) public onlyAdmin {
+    function setAllowListAddress(address allowLister, uint256 amount)
+        public
+        onlyOperator
+    {
         AllowListMintLib.setAllowListAddress(allowLister, amount);
     }
 
-    function setMultipleAllowListAddresses(address[] memory allowListers, uint256 amount) public onlyAdmin {
+    function setMultipleAllowListAddresses(
+        address[] memory allowListers,
+        uint256 amount
+    ) public onlyOperator {
         AllowListMintLib.setMultipleAllowListAddresses(allowListers, amount);
     }
 
@@ -18,11 +24,15 @@ contract AllowListMintFacet is SaleStateModifiers, AccessControlModifiers {
         AllowListMintLib.mintFromAllowList(count);
     }
 
-    function numAllowListEntries(address allowLister) public view returns (uint256) {
+    function numAllowListEntries(address allowLister)
+        public
+        view
+        returns (uint256)
+    {
         return AllowListMintLib.numAllowListEntries(allowLister);
     }
 
-    function setAllowListMintPrice(uint256 nextPrice) public onlyAdmin {
+    function setAllowListMintPrice(uint256 nextPrice) public onlyOperator {
         AllowListMintLib.setAllowListMintPrice(nextPrice);
     }
 

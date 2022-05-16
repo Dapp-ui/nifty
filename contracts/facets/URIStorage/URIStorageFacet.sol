@@ -5,7 +5,10 @@ import {URIStorageLib} from "./URIStorageLib.sol";
 import {AccessControlModifiers} from "../AccessControl/AccessControlModifiers.sol";
 
 contract URIStorageFacet is AccessControlModifiers {
-    function setTokenURI(uint256 tokenId, string memory _tokenURI) external onlyAdmin {
+    function setTokenURI(uint256 tokenId, string memory _tokenURI)
+        external
+        onlyOperator
+    {
         URIStorageLib._setTokenURI(tokenId, _tokenURI);
     }
 }

@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import {IDiamondCut} from "./facets/DiamondClone/IDiamondCut.sol";
 import {IDiamondLoupe} from "./facets/DiamondClone/IDiamondLoupe.sol";
 import {DiamondSawLib} from "./libraries/DiamondSawLib.sol";
-import {AccessControlFacet} from "./facets/AccessControl/AccessControlFacet.sol";
+import {BasicAccessControlFacet} from "./facets/AccessControl/BasicAccessControlFacet.sol";
 import {AccessControlModifiers} from "./facets/AccessControl/AccessControlModifiers.sol";
 import {AccessControlLib} from "./facets/AccessControl/AccessControlLib.sol";
 
@@ -29,7 +29,7 @@ import {AccessControlLib} from "./facets/AccessControl/AccessControlLib.sol";
  * to communicate with the singleton (saw) to fetch selectors
  *
  */
-contract DiamondSaw is AccessControlFacet, AccessControlModifiers {
+contract DiamondSaw is BasicAccessControlFacet, AccessControlModifiers {
     constructor() {
         AccessControlLib._transferOwnership(msg.sender);
     }
@@ -38,7 +38,7 @@ contract DiamondSaw is AccessControlFacet, AccessControlModifiers {
         IDiamondCut.FacetCut[] calldata _facetAdds,
         address _init,
         bytes calldata _calldata
-    ) external onlyAdmin {
+    ) external onlyOperator {
         DiamondSawLib.diamondCutAddOnly(_facetAdds, _init, _calldata);
     }
 
@@ -47,46 +47,90 @@ contract DiamondSaw is AccessControlFacet, AccessControlModifiers {
         DiamondSawLib.checkFacetSupported(_facetAddress);
     }
 
-    function facetAddressForSelector(bytes4 selector) external view returns (address) {
-        return DiamondSawLib.diamondSawStorage().selectorToFacetAndPosition[selector].facetAddress;
+    function facetAddressForSelector(bytes4 selector)
+        external
+        view
+        returns (address)
+    {
+        return
+            DiamondSawLib
+                .diamondSawStorage()
+                .selectorToFacetAndPosition[selector]
+                .facetAddress;
     }
 
-    function functionSelectorsForFacetAddress(address facetAddress) external view returns (bytes4[] memory) {
-        return DiamondSawLib.diamondSawStorage().facetFunctionSelectors[facetAddress].functionSelectors;
+    function functionSelectorsForFacetAddress(address facetAddress)
+        external
+        view
+        returns (bytes4[] memory)
+    {
+        return
+            DiamondSawLib
+                .diamondSawStorage()
+                .facetFunctionSelectors[facetAddress]
+                .functionSelectors;
     }
 
     function allFacetAddresses() external view returns (address[] memory) {
         return DiamondSawLib.diamondSawStorage().facetAddresses;
     }
 
-    function allFacetsWithSelectors() external view returns (IDiamondLoupe.Facet[] memory _facetsWithSelectors) {
-        DiamondSawLib.DiamondSawStorage storage ds = DiamondSawLib.diamondSawStorage();
+    function allFacetsWithSelectors()
+        external
+        view
+        returns (IDiamondLoupe.Facet[] memory _facetsWithSelectors)
+    {
+        DiamondSawLib.DiamondSawStorage storage ds = DiamondSawLib
+            .diamondSawStorage();
 
         uint256 numFacets = ds.facetAddresses.length;
         _facetsWithSelectors = new IDiamondLoupe.Facet[](numFacets);
         for (uint256 i; i < numFacets; i++) {
             address facetAddress_ = ds.facetAddresses[i];
             _facetsWithSelectors[i].facetAddress = facetAddress_;
-            _facetsWithSelectors[i].functionSelectors = ds.facetFunctionSelectors[facetAddress_].functionSelectors;
+            _facetsWithSelectors[i].functionSelectors = ds
+                .facetFunctionSelectors[facetAddress_]
+                .functionSelectors;
         }
     }
 
-    function facetAddressForInterface(bytes4 _interface) external view returns (address) {
-        DiamondSawLib.DiamondSawStorage storage ds = DiamondSawLib.diamondSawStorage();
+    function facetAddressForInterface(bytes4 _interface)
+        external
+        view
+        returns (address)
+    {
+        DiamondSawLib.DiamondSawStorage storage ds = DiamondSawLib
+            .diamondSawStorage();
         return ds.interfaceToFacet[_interface];
     }
 
-    function setFacetForERC165Interface(bytes4 _interface, address _facet) external onlyAdmin {
+    function setFacetForERC165Interface(bytes4 _interface, address _facet)
+        external
+        onlyOperator
+    {
         DiamondSawLib.checkFacetSupported(_facet);
         DiamondSawLib.diamondSawStorage().interfaceToFacet[_interface] = _facet;
     }
 
-    function setTransferHooksContractApproved(address tokenTransferHookContract, bool approved) external onlyOwner {
-        DiamondSawLib.setTransferHooksContractApproved(tokenTransferHookContract, approved);
+    function setTransferHooksContractApproved(
+        address tokenTransferHookContract,
+        bool approved
+    ) external onlyOwner {
+        DiamondSawLib.setTransferHooksContractApproved(
+            tokenTransferHookContract,
+            approved
+        );
     }
 
-    function isTransferHooksContractApproved(address tokenTransferHookContract) external view returns (bool) {
-        return DiamondSawLib.diamondSawStorage().approvedTransferHooksContracts[tokenTransferHookContract];
+    function isTransferHooksContractApproved(address tokenTransferHookContract)
+        external
+        view
+        returns (bool)
+    {
+        return
+            DiamondSawLib.diamondSawStorage().approvedTransferHooksContracts[
+                tokenTransferHookContract
+            ];
     }
 
     function setUpgradeSawAddress(address _upgradeSaw) external onlyOwner {

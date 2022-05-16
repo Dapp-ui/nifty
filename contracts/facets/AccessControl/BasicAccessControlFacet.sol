@@ -21,7 +21,7 @@ import "./AccessControlLib.sol";
  * `onlyOwner`, which can be applied to your functions to restrict their use to
  * the owner.
  */
-abstract contract AccessControlFacet is Context {
+abstract contract BasicAccessControlFacet is Context {
     /**
      * @dev Returns the address of the current owner.
      */
@@ -35,10 +35,12 @@ abstract contract AccessControlFacet is Context {
      *
      * NOTE: Renouncing ownership will leave the contract without an owner,
      * thereby removing any functionality that is only available to the owner.
+     *
+     * NOTE: we use non-zero ownership
      */
     function renounceOwnership() public virtual {
         AccessControlLib._enforceOwner();
-        AccessControlLib._transferOwnership(address(0));
+        AccessControlLib._transferOwnership(address(1));
     }
 
     /**
@@ -47,12 +49,21 @@ abstract contract AccessControlFacet is Context {
      */
     function transferOwnership(address newOwner) public virtual {
         AccessControlLib._enforceOwner();
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         AccessControlLib._transferOwnership(newOwner);
     }
 
-    function setAdmin(address _admin, bool isAdmin) public virtual {
+    function grantOperator(address _operator) public virtual {
         AccessControlLib._enforceOwner();
-        AccessControlLib.accessControlStorage()._admins[_admin] = isAdmin;
+
+        AccessControlLib.grantRole(AccessControlLib.OPERATOR_ROLE, _operator);
+    }
+
+    function revokeOperator(address _operator) public virtual {
+        AccessControlLib._enforceOwner();
+        AccessControlLib.revokeRole(AccessControlLib.OPERATOR_ROLE, _operator);
     }
 }

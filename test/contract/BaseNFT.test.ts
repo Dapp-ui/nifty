@@ -90,4 +90,8 @@ describe('AccessControlTest', async function () {
   it('should support burning tokens', async () => {
     expect(false).to.equal(true);
   });
+
+  it('should not allow re-initialization once ownership is renounced', async () => {
+    expect(false).to.equal(true);
+  });
 });

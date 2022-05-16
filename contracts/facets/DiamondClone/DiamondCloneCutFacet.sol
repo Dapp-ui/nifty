@@ -14,7 +14,12 @@ contract DiamondCloneCutFacet is IDiamondCut, AccessControlModifiers {
         address _init, // base facet address
         bytes calldata _calldata // appropriate call data
     ) external {
-        DiamondCloneLib.initialCutWithDiamondSaw(diamondSawAddress, facetAddresses, _init, _calldata);
+        DiamondCloneLib.initialCutWithDiamondSaw(
+            diamondSawAddress,
+            facetAddresses,
+            _init,
+            _calldata
+        );
     }
 
     function diamondCut(
@@ -22,16 +27,22 @@ contract DiamondCloneCutFacet is IDiamondCut, AccessControlModifiers {
         address _init,
         bytes calldata _calldata
     ) external override onlyOwner {
-        require(!DiamondCloneLib.isImmutable(), "Cannot cut the diamond while immutable");
+        require(
+            !DiamondCloneLib.isImmutable(),
+            "Cannot cut the diamond while immutable"
+        );
         DiamondCloneLib.cutWithDiamondSaw(_diamondCut, _init, _calldata);
     }
 
-    function setGasCacheForSelector(bytes4 selector) external onlyAdmin {
+    function setGasCacheForSelector(bytes4 selector) external onlyOperator {
         DiamondCloneLib.setGasCacheForSelector(selector);
     }
 
     function setImmutableUntilBlock(uint256 blockNumber) external onlyOwner {
-        require(!DiamondCloneLib.isImmutable(), "Cannot cut the diamond while immutable");
+        require(
+            !DiamondCloneLib.isImmutable(),
+            "Cannot cut the diamond while immutable"
+        );
         DiamondCloneLib.setImmutableUntilBlock(blockNumber);
     }
 
@@ -45,6 +56,11 @@ contract DiamondCloneCutFacet is IDiamondCut, AccessControlModifiers {
         address _init,
         bytes calldata _calldata
     ) external onlyOwner {
-        DiamondCloneLib.upgradeDiamondSaw(_oldFacetAddresses, _newFacetAddresses, _init, _calldata);
+        DiamondCloneLib.upgradeDiamondSaw(
+            _oldFacetAddresses,
+            _newFacetAddresses,
+            _init,
+            _calldata
+        );
     }
 }
