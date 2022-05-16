@@ -8,25 +8,7 @@ const { assert, expect } = require('chai');
 import { ethers } from 'hardhat';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
-const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
-
-async function checkAdminFuncs(contract, nonOwner, calls) {
-  for (let call of calls) {
-    let functionCall = contract.interface.encodeFunctionData(
-      call.signature,
-      call.args
-    );
-
-    const promise = nonOwner.sendTransaction({
-      to: contract.address,
-      data: functionCall,
-    });
-
-    await expect(promise).to.be.revertedWith(
-      call.operator ? 'AccessControl: account' : 'Caller is not the owner'
-    );
-  }
-}
+import { checkAdminFuncs } from '../../scripts/libraries/accessControl';
 
 describe('AccessControlTest', async function () {
   let diamondAddress,
@@ -104,119 +86,25 @@ describe('AccessControlTest', async function () {
   });
 
   it('should properly gate all admin functions', async () => {
-    const diamondFacetCalls = [
+    const accessControlCalls = [
       {
-        signature: 'diamondCut((address,uint8,bytes4[])[],address,bytes)',
-        args: [[], ethers.constants.AddressZero, '0x'],
+        signature: 'renounceOwnership()',
+        args: [],
       },
       {
-        signature: 'setGasCacheForSelector(bytes4)',
-        args: ['0x00000000'],
-        operator: true,
+        signature: 'transferOwnership(address)',
+        args: [ethers.constants.AddressZero],
       },
       {
-        signature: 'setImmutableUntilBlock(uint256)',
-        args: [0],
+        signature: 'grantOperator(address)',
+        args: [ethers.constants.AddressZero],
       },
       {
-        signature: 'upgradeDiamondSaw(address[],address[],address,bytes)',
-        args: [[], [], ethers.constants.AddressZero, '0x'],
+        signature: 'revokeOperator(address)',
+        args: [ethers.constants.AddressZero],
       },
     ];
 
-    const baseNFTCalls = [
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-      {
-        signature: '',
-        args: [],
-      },
-    ];
-
-    const diamondContract = await ethers.getContractAt(
-      'BaseDiamondCloneFacet',
-      diamondAddress
-    );
-
-    await checkAdminFuncs(diamondContract, nonOwner, diamondFacetCalls);
-    await checkAdminFuncs(accessControlFacet, nonOwner, baseNFTCalls);
+    await checkAdminFuncs(accessControlFacet, nonOwner, accessControlCalls);
   });
 });

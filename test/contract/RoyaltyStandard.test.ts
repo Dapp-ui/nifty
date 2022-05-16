@@ -41,4 +41,8 @@ describe('AccessControlTest', async function () {
   it('should be able to reveive funds in the contract', async () => {
     expect(false).to.equal(true);
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

@@ -361,4 +361,8 @@ describe('PaymentSplitterTest', async function () {
       });
     });
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

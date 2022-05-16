@@ -53,4 +53,8 @@ describe('DiamondTest', async function () {
   it('should appropriately purge the gas cache on diamond saw upgrade', async () => {
     expect(false).to.equal(true);
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

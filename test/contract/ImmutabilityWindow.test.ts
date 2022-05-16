@@ -51,4 +51,8 @@ describe('DiamondTest', async function () {
     // TODO -
     expect(false).to.equal(true);
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

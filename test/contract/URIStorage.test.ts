@@ -47,4 +47,8 @@ describe('AccessControlTest', async function () {
     // not sure if we need this one tbh
     expect(false).to.equal(true);
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

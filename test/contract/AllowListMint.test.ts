@@ -33,4 +33,8 @@ describe('AccessControlTest', async function () {
     accounts = await ethers.getSigners();
     contractOwner = accounts[0];
   });
+
+  it('should properly gate admin functions', async () => {
+    expect(false).to.equal(true);
+  });
 });

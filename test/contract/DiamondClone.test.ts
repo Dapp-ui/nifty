@@ -4,10 +4,15 @@ const {
 } = require('../../scripts/libraries/diamond.js');
 import '@nomiclabs/hardhat-waffle';
 
-const { deployDiamond } = require('../../scripts/deployDiamondSaw.js');
+const {
+  deployDiamond,
+  getDecodedEventsFromContract,
+  deployTest1Facet,
+} = require('../../scripts/deployDiamondSaw.js');
 
 const { assert, expect } = require('chai');
 import { ethers } from 'hardhat';
+import { checkAdminFuncs } from '../../scripts/libraries/accessControl';
 
 const cutAbi = require('../../artifacts/contracts/facets/DiamondClone/DiamondCloneCutFacet.sol/DiamondCloneCutFacet.json');
 
@@ -196,17 +201,21 @@ describe('DiamondTest', async function () {
   });
 
   it('Should return appropriate ERC-165 interfaces set in the saw', async () => {
-    const interface = '0x12345678';
+    const erc165Interface = '0x12345678';
 
-    const supported1 = await baseNFTFacetInstance.supportsInterface(interface);
+    const supported1 = await baseNFTFacetInstance.supportsInterface(
+      erc165Interface
+    );
     expect(supported1).to.equal(false);
 
     await sawInstance.setFacetForInterface(
-      interface,
+      erc165Interface,
       baseNFTFacetImplementation.address
     );
 
-    const supported2 = await baseNFTFacetInstance.supportsInterface(interface);
+    const supported2 = await baseNFTFacetInstance.supportsInterface(
+      erc165Interface
+    );
     expect(supported2).to.equal(true);
   });
 
@@ -262,5 +271,34 @@ describe('DiamondTest', async function () {
 
   it('Should appropriately call the init function with an upgraded saw', async () => {
     expect(false).to.equal(true);
+  });
+
+  it('should properly gate all admin functions', async () => {
+    const diamondFacetCalls = [
+      {
+        signature: 'diamondCut((address,uint8,bytes4[])[],address,bytes)',
+        args: [[], ethers.constants.AddressZero, '0x'],
+      },
+      {
+        signature: 'setGasCacheForSelector(bytes4)',
+        args: ['0x00000000'],
+        operator: true,
+      },
+      {
+        signature: 'setImmutableUntilBlock(uint256)',
+        args: [0],
+      },
+      {
+        signature: 'upgradeDiamondSaw(address[],address[],address,bytes)',
+        args: [[], [], ethers.constants.AddressZero, '0x'],
+      },
+    ];
+
+    const diamondContract = await ethers.getContractAt(
+      'BaseDiamondCloneFacet',
+      diamondAddress
+    );
+
+    await checkAdminFuncs(diamondContract, accounts[1], diamondFacetCalls);
   });
 });
