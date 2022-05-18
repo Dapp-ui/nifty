@@ -4,7 +4,7 @@ import abi from './abi';
 import rpcUrlFromNetwork from './utils/rpcUrlFromNetwork';
 import isWriteProvider from './utils/isWriteProvider';
 import WalletConnector, { WalletType } from './WalletConnector';
-import type { Smokers as NiftyContract } from '../typechain-types';
+import type { Relyc as NiftyContract } from '../typechain-types';
 
 interface NFT {
   id: number;
@@ -73,11 +73,25 @@ class Nifty {
     const price = await this.mintPriceWei();
 
     const address = await this.provider.getSigner().getAddress();
+    const saleState = (await this.contract.saleState()).toNumber();
 
-    const txn = await this.contract.mint(count, {
-      from: address,
-      value: price.mul(count),
-    });
+    let txn;
+
+    switch (saleState) {
+      case SaleState.CLOSED:
+        throw new Error('Sale is closed');
+      case SaleState.PUBLIC:
+        txn = await this.contract.publicMint(count, {
+          from: address,
+          value: price.mul(count),
+        });
+        break;
+      case SaleState.ALLOW_LIST:
+        txn = await this.contract.allowListMint(count, {
+          from: address,
+          value: price.mul(count),
+        });
+    }
 
     const txnResult = await txn.wait();
 
@@ -166,6 +180,10 @@ class Nifty {
     }
 
     return this.walletConnector.getConnectedAddress();
+  }
+
+  public getSigner(): ethers.Signer {
+    return this.walletConnector.getSigner();
   }
 }
 

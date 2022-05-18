@@ -39,14 +39,23 @@ contract BaseNFTFacet is
         s._name = _name;
         s._symbol = _symbol;
 
-        if (s._currentIndex == 0 && _startIndex != 0) {
+        if (s._currentIndex == s._startIndex) {
             s._startIndex = _startIndex;
             s._currentIndex = _startIndex;
         }
     }
 
     function devMint(address to, uint256 quantity) public payable onlyOperator {
-        ERC721ALib._safeMint(to, quantity);
+        BaseNFTLib._safeMint(to, quantity);
+    }
+
+    function devMintWithTokenURI(address to, string memory _tokenURI)
+        public
+        payable
+        onlyOperator
+    {
+        uint256 tokenId = BaseNFTLib._safeMint(to, 1);
+        URIStorageLib.setTokenURI(tokenId, _tokenURI);
     }
 
     function saleState() public view returns (uint256) {
@@ -57,6 +66,14 @@ contract BaseNFTFacet is
         BaseNFTLib.setSaleState(_saleState);
     }
 
+    function setMaxMintable(uint256 _maxMintable) public onlyOperator {
+        return BaseNFTLib.setMaxMintable(_maxMintable);
+    }
+
+    function maxMintable() public view returns (uint256) {
+        return BaseNFTLib.maxMintable();
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view
@@ -64,8 +81,9 @@ contract BaseNFTFacet is
         override
         returns (string memory)
     {
-        if (!_exists(tokenId))
+        if (!_exists(tokenId)) {
             revert("Cannot Query tokenURI for non-existant tokenId");
+        }
 
         return URIStorageLib.tokenURI(tokenId);
     }

@@ -7,7 +7,7 @@ const prod = mode === 'production';
 
 module.exports = {
   entry: {
-    'build/bundle': ['./src/svelte/main.ts'],
+    'build/bundle': ['./embed/svelte/main.ts'],
   },
   resolve: {
     alias: {

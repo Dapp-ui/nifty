@@ -20,8 +20,8 @@ contract AllowListMintFacet is SaleStateModifiers, AccessControlModifiers {
         AllowListMintLib.setMultipleAllowListAddresses(allowListers, amount);
     }
 
-    function mintFromAllowList(uint256 count) public onlyAtSaleState(2) {
-        AllowListMintLib.mintFromAllowList(count);
+    function allowListMint(uint256 count) public onlyAtSaleState(2) {
+        AllowListMintLib.allowListMint(count);
     }
 
     function numAllowListEntries(address allowLister)

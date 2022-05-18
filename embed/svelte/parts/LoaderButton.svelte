@@ -8,6 +8,7 @@
   export let handleClick;
   export let width = 150;
   export let height = 50;
+  export let borderColor = '#000';
 </script>
 
 <RotatorBorder {width} {height} shouldShow={isLoading}>
@@ -16,9 +17,9 @@
     {height}
     title={isLoading ? loadingText : title}
     {handleClick}
-    textColor={isLoading ? '#000' : '#fff'}
-    backgroundColor={isLoading ? '#fff' : '#000'}
-    border={isLoading ? '#000' : 'transparent'}
+    textColor={isLoading ? borderColor : '#fff'}
+    backgroundColor={isLoading ? '#fff' : borderColor}
+    border={isLoading ? borderColor : 'transparent'}
   />
 </RotatorBorder>
 

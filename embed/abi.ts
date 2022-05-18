@@ -200,7 +200,7 @@ export default [
   },
   {
     inputs: [],
-    name: 'ALLOWLIST_SALE',
+    name: 'ALLOW_LIST_SALE',
     outputs: [
       {
         internalType: 'uint256',
@@ -248,6 +248,19 @@ export default [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'allowListMint',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function',
   },
   {
@@ -390,19 +403,6 @@ export default [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'count',
-        type: 'uint256',
-      },
-    ],
-    name: 'mint',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'name',
     outputs: [
@@ -464,6 +464,45 @@ export default [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'provenanceCut',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'provenanceHash',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'publicMint',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function',
   },
   {
@@ -647,6 +686,32 @@ export default [
     inputs: [
       {
         internalType: 'uint256',
+        name: '_cut',
+        type: 'uint256',
+      },
+    ],
+    name: 'setProvenanceCut',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_provenance',
+        type: 'bytes32',
+      },
+    ],
+    name: 'setProvenanceHash',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
         name: 'newPrice',
         type: 'uint256',
       },
@@ -665,6 +730,24 @@ export default [
       },
     ],
     name: 'setSaleState',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'timeZone',
+        type: 'uint256',
+      },
+    ],
+    name: 'setTimeZone',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

@@ -105,6 +105,10 @@ class WalletConnector {
   public getProvider(): ethers.providers.Provider {
     return this.provider;
   }
+
+  public getSigner(): ethers.Signer {
+    return this.signer;
+  }
 }
 
 export default WalletConnector;

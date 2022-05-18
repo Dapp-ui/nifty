@@ -54,7 +54,7 @@ contract Relyc is ERC721A, Ownable {
 
     function publicMint(uint256 count) external payable {
         require(saleState == PUBLIC_SALE, "Relyc: sale is not public");
-        require(totalSupply() + count <= maxSupply, "Relyc: none left");
+        require(_totalMinted() + count <= maxSupply, "Relyc: none left");
         require(
             msg.value >= publicMintPrice * count,
             "Relyc: not enough funds sent"
@@ -67,7 +67,7 @@ contract Relyc is ERC721A, Ownable {
             saleState == ALLOW_LIST_SALE,
             "Relyc: sale is not via allowlist"
         );
-        require(totalSupply() + count <= maxSupply, "Relyc: none left");
+        require(_totalMinted() + count <= maxSupply, "Relyc: none left");
         require(
             msg.value >= allowListPrice * count,
             "Relyc: not enough funds sent"
@@ -86,7 +86,7 @@ contract Relyc is ERC721A, Ownable {
     }
 
     function devMint(uint256 count) public payable onlyOwner {
-        require(totalSupply() + count <= maxSupply, "Relyc: none left");
+        require(_totalMinted() + count <= maxSupply, "Relyc: none left");
         _safeMint(msg.sender, count);
     }
 

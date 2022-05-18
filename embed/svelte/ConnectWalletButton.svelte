@@ -1,5 +1,5 @@
 <script>
-  import GenericButton from './parts/GenericButton.svelte';
+  import CustomStylesButton from './parts/CustomStylesButton.svelte';
   import { getContext } from 'svelte';
   import ConnectWalletPopup from './ConnectWalletPopup.svelte';
   import connectedAddress from './stores/connectedAddress';
@@ -7,7 +7,7 @@
   const { open } = getContext('simple-modal');
   import params from '../utils/params';
 
-  const { buttonBgColor, buttonTextColor } = params;
+  const { connectWalletButtonCustomStyles } = params;
 
   const showPopUp = () => open(ConnectWalletPopup);
 
@@ -18,9 +18,8 @@
   });
 </script>
 
-<GenericButton
-  textColor={buttonTextColor}
-  backgroundColor={buttonBgColor}
+<CustomStylesButton
   handleClick={showPopUp}
   title={buttonTitle || 'Connect Wallet'}
+  customStyles={connectWalletButtonCustomStyles}
 />

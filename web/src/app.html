@@ -7,6 +7,15 @@
 		<link rel="icon" type="image/png" href="/images/juiceNoBg.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%svelte.head%
+		<script>
+			(function (params) {
+				window.niftyParams = params;
+			})({
+				network: 'rinkeby',
+				buttonTextColor: '#ffffff',
+				buttonBgColor: '#1f271b'
+			});
+		</script>
 	</head>
 	<body>
 		<div>%svelte.body%</div>

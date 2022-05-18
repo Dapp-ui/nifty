@@ -20,10 +20,10 @@ async function deployDiamond() {
     maxPriorityFeePerGas,
   });
 
-  // console.log(
-  //   "Deploy diamond Clone Facet with txn hash",
-  //   baseDiamondCloneFacet.deployTransaction.hash
-  // );
+  console.log(
+    'Deploy diamond Clone Facet with txn hash',
+    baseDiamondCloneFacet.deployTransaction.hash
+  );
 
   await baseDiamondCloneFacet.deployed();
 
@@ -32,10 +32,10 @@ async function deployDiamond() {
     maxFeePerGas,
     maxPriorityFeePerGas,
   });
-  // console.log(
-  //   'Deploy NFT Facet with txn hash',
-  //   baseNFTFacet.deployTransaction.hash
-  // );
+  console.log(
+    'Deploy NFT Facet with txn hash',
+    baseNFTFacet.deployTransaction.hash
+  );
   await baseNFTFacet.deployed();
 
   const PaymentSplitterFacet = await ethers.getContractFactory(
@@ -47,16 +47,28 @@ async function deployDiamond() {
     maxPriorityFeePerGas,
   });
 
+  console.log(
+    'Deploying the payment splitter with hash',
+    baseNFTFacet.deployTransaction.hash
+  );
+
+  const LazyMintFacet = await ethers.getContractFactory('LazyMintFacet');
+
+  const lazyMintFacet = await LazyMintFacet.deploy({
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  });
+
   // deploy the SAW!
   const DiamondSaw = await ethers.getContractFactory('DiamondSaw');
   const diamondSaw = await DiamondSaw.deploy({
     maxFeePerGas,
     maxPriorityFeePerGas,
   });
-  // console.log(
-  //   'Deploy Diamond Saw with txn hash',
-  //   diamondSaw.deployTransaction.hash
-  // );
+  console.log(
+    'Deploy Diamond Saw with txn hash',
+    diamondSaw.deployTransaction.hash
+  );
   await diamondSaw.deployed();
 
   // add the BaseDiamond and BaseNFT facet pattern to the SAW
@@ -76,6 +88,11 @@ async function deployDiamond() {
       action: FacetCutAction.Add,
       functionSelectors: getSelectors(paymentSplitterFacet),
     },
+    {
+      facetAddress: lazyMintFacet.address,
+      action: FacetCutAction.Add,
+      functionSelectors: getSelectors(lazyMintFacet),
+    },
   ];
 
   const tx = await diamondSaw.addFacetPattern(
@@ -87,31 +104,31 @@ async function deployDiamond() {
 
   await tx.wait();
 
-  // console.log('Cutting saw with txn hash', tx.hash);
+  console.log('Cutting saw with txn hash', tx.hash);
 
   // deploy Diamond Clone
-  const DiamondClone = await ethers.getContractFactory('DiamondClone');
+  // const DiamondClone = await ethers.getContractFactory('DiamondClone');
 
-  let functionCall = baseNFTFacet.interface.encodeFunctionData('init');
+  // let functionCall = baseNFTFacet.interface.encodeFunctionData('init');
 
-  const diamondClone = await DiamondClone.deploy(
-    diamondSaw.address,
-    [baseDiamondCloneFacet.address, baseNFTFacet.address],
-    baseNFTFacet.address,
-    functionCall,
-    { maxFeePerGas, maxPriorityFeePerGas }
-  );
+  // const diamondClone = await DiamondClone.deploy(
+  //   diamondSaw.address,
+  //   [baseDiamondCloneFacet.address, baseNFTFacet.address],
+  //   baseNFTFacet.address,
+  //   functionCall,
+  //   { maxFeePerGas, maxPriorityFeePerGas }
+  // );
 
   // console.log(
   //   'Deploy Diamond Saw with txn hash',
   //   diamondSaw.deployTransaction.hash
   // );
 
-  await diamondClone.deployed();
+  // await diamondClone.deployed();
 
   return {
-    diamondAddress: diamondClone.address,
-    initCallData: functionCall,
+    // diamondAddress: diamondClone.address,
+    // initCallData: functionCall,
     sawInstance: diamondSaw,
     baseNFTFacetImplementation: baseNFTFacet,
     baseDiamondImplementation: baseDiamondCloneFacet,

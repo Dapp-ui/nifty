@@ -1,12 +1,12 @@
 <script>
-  import GenericButton from './parts/GenericButton.svelte';
+  import CustomStylesButton from './parts/CustomStylesButton.svelte';
   import { getContext } from 'svelte';
   import MintPopUp from './MintPopUp.svelte';
   import nifty from './niftyInstance';
   import errorMessage from './stores/errorMessage';
   import params from '../utils/params';
 
-  const { buttonBgColor, buttonTextColor } = params;
+  const { mintButtonCustomStyles } = params;
 
   const { open } = getContext('simple-modal');
 
@@ -22,10 +22,8 @@
   };
 </script>
 
-<GenericButton
-  textColor={buttonTextColor}
-  backgroundColor={buttonBgColor}
+<CustomStylesButton
   handleClick={showPopUp}
   title={'Mint'}
-  customStyles={params.mintButtonCustomStyles}
+  customStyles={mintButtonCustomStyles}
 />

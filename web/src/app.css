@@ -13,14 +13,25 @@ body {
   font-weight: black;
 }
 
+@font-face {
+  font-family: NunitoSansBold;
+  src: url('/NunitoSans/NunitoSans-Bold.ttf');
+  font-weight: black;
+}
+
 body {
   margin: 0;
   overflow: hidden;
+  font-family: 'NunitoSans';
 }
 
 h1,
 h2,
-h3 {
+h3,
+input,
+textarea,
+div,
+button {
   font-family: 'NunitoSans';
   font-weight: black;
 }

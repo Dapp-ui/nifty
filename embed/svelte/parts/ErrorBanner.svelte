@@ -47,6 +47,7 @@
     color: white;
     left: 0px;
     right: 0px;
+    z-index: 2147483647;
   }
 
   .textWrapper {

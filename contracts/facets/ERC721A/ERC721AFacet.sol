@@ -22,18 +22,19 @@ abstract contract ERC721AFacet is IERC721Metadata {
      * @dev Burned tokens are calculated here, use _totalMinted() if you want to count just minted tokens.
      */
     function totalSupply() public view returns (uint256) {
-        return ERC721ALib.totalSupply();
+        ERC721ALib.ERC721AStorage storage s = ERC721ALib.erc721AStorage();
+        // Counter underflow is impossible as _burnCounter cannot be incremented
+        // more than _currentIndex - _startTokenId() times
+        unchecked {
+            return s._currentIndex - s._burnCounter - s._startIndex;
+        }
     }
 
     /**
      * Returns the total amount of tokens minted in the contract.
      */
-    function _totalMinted() internal view returns (uint256) {
-        // Counter underflow is impossible as _currentIndex does not decrement,
-        // and it is initialized to ERC721ALib._startTokenId()
-        unchecked {
-            return ERC721ALib.erc721AStorage()._currentIndex - ERC721ALib._startTokenId();
-        }
+    function totalMinted() public view returns (uint256) {
+        return ERC721ALib.totalMinted();
     }
 
     /**
@@ -48,14 +49,20 @@ abstract contract ERC721AFacet is IERC721Metadata {
      * Returns the number of tokens minted by `owner`.
      */
     function _numberMinted(address owner) internal view returns (uint256) {
-        return uint256(ERC721ALib.erc721AStorage()._addressData[owner].numberMinted);
+        return
+            uint256(
+                ERC721ALib.erc721AStorage()._addressData[owner].numberMinted
+            );
     }
 
     /**
      * Returns the number of tokens burned by or on behalf of `owner`.
      */
     function _numberBurned(address owner) internal view returns (uint256) {
-        return uint256(ERC721ALib.erc721AStorage()._addressData[owner].numberBurned);
+        return
+            uint256(
+                ERC721ALib.erc721AStorage()._addressData[owner].numberBurned
+            );
     }
 
     /**
@@ -77,13 +84,19 @@ abstract contract ERC721AFacet is IERC721Metadata {
      * Gas spent here starts off proportional to the maximum mint batch size.
      * It gradually moves to O(1) as tokens get transferred around in the collection over time.
      */
-    function _ownershipOf(uint256 tokenId) internal view returns (ERC721ALib.TokenOwnership memory) {
+    function _ownershipOf(uint256 tokenId)
+        internal
+        view
+        returns (ERC721ALib.TokenOwnership memory)
+    {
         uint256 curr = tokenId;
 
         ERC721ALib.ERC721AStorage storage s = ERC721ALib.erc721AStorage();
         unchecked {
             if (ERC721ALib._startTokenId() <= curr && curr < s._currentIndex) {
-                ERC721ALib.TokenOwnership memory ownership = s._ownerships[curr];
+                ERC721ALib.TokenOwnership memory ownership = s._ownerships[
+                    curr
+                ];
                 if (!ownership.burned) {
                     if (ownership.addr != address(0)) {
                         return ownership;
@@ -143,7 +156,12 @@ abstract contract ERC721AFacet is IERC721Metadata {
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view override returns (address) {
+    function getApproved(uint256 tokenId)
+        public
+        view
+        override
+        returns (address)
+    {
         if (!_exists(tokenId)) revert ApprovalQueryForNonexistentToken();
 
         return ERC721ALib.erc721AStorage()._tokenApprovals[tokenId];
@@ -152,17 +170,29 @@ abstract contract ERC721AFacet is IERC721Metadata {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
+    function setApprovalForAll(address operator, bool approved)
+        public
+        virtual
+        override
+    {
         if (operator == msg.sender) revert ApproveToCaller();
 
-        ERC721ALib.erc721AStorage()._operatorApprovals[msg.sender][operator] = approved;
+        ERC721ALib.erc721AStorage()._operatorApprovals[msg.sender][
+            operator
+        ] = approved;
         emit ApprovalForAll(msg.sender, operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return ERC721ALib.erc721AStorage()._operatorApprovals[owner][operator];
     }
 
@@ -198,7 +228,10 @@ abstract contract ERC721AFacet is IERC721Metadata {
         bytes memory _data
     ) public virtual override {
         _transfer(from, to, tokenId);
-        if (to.isContract() && !ERC721ALib._checkContractOnERC721Received(from, to, tokenId, _data)) {
+        if (
+            to.isContract() &&
+            !ERC721ALib._checkContractOnERC721Received(from, to, tokenId, _data)
+        ) {
             revert TransferToNonERC721ReceiverImplementer();
         }
     }
@@ -237,7 +270,9 @@ abstract contract ERC721AFacet is IERC721Metadata {
 
         if (prevOwnership.addr != from) revert TransferFromIncorrectOwner();
 
-        bool isApprovedOrOwner = (msg.sender == from || isApprovedForAll(from, msg.sender) || getApproved(tokenId) == msg.sender);
+        bool isApprovedOrOwner = (msg.sender == from ||
+            isApprovedForAll(from, msg.sender) ||
+            getApproved(tokenId) == msg.sender);
 
         if (!isApprovedOrOwner) revert TransferCallerNotOwnerNorApproved();
         if (to == address(0)) revert TransferToZeroAddress();
@@ -261,7 +296,9 @@ abstract contract ERC721AFacet is IERC721Metadata {
             // If the ownership slot of tokenId+1 is not explicitly set, that means the transfer initiator owns it.
             // Set the slot of tokenId+1 explicitly in storage to maintain correctness for ownerOf(tokenId+1) calls.
             uint256 nextTokenId = tokenId + 1;
-            ERC721ALib.TokenOwnership storage nextSlot = s._ownerships[nextTokenId];
+            ERC721ALib.TokenOwnership storage nextSlot = s._ownerships[
+                nextTokenId
+            ];
             if (nextSlot.addr == address(0)) {
                 // This will suffice for checking _exists(nextTokenId),
                 // as a burned slot cannot contain the zero address.
@@ -300,7 +337,9 @@ abstract contract ERC721AFacet is IERC721Metadata {
         address from = prevOwnership.addr;
 
         if (approvalCheck) {
-            bool isApprovedOrOwner = (msg.sender == from || isApprovedForAll(from, msg.sender) || getApproved(tokenId) == msg.sender);
+            bool isApprovedOrOwner = (msg.sender == from ||
+                isApprovedForAll(from, msg.sender) ||
+                getApproved(tokenId) == msg.sender);
 
             if (!isApprovedOrOwner) revert TransferCallerNotOwnerNorApproved();
         }
@@ -327,7 +366,9 @@ abstract contract ERC721AFacet is IERC721Metadata {
             // If the ownership slot of tokenId+1 is not explicitly set, that means the burn initiator owns it.
             // Set the slot of tokenId+1 explicitly in storage to maintain correctness for ownerOf(tokenId+1) calls.
             uint256 nextTokenId = tokenId + 1;
-            ERC721ALib.TokenOwnership storage nextSlot = s._ownerships[nextTokenId];
+            ERC721ALib.TokenOwnership storage nextSlot = s._ownerships[
+                nextTokenId
+            ];
             if (nextSlot.addr == address(0)) {
                 // This will suffice for checking _exists(nextTokenId),
                 // as a burned slot cannot contain the zero address.

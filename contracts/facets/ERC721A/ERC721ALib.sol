@@ -25,9 +25,14 @@ library ERC721ALib {
     using Address for address;
     using Strings for uint256;
 
-    bytes32 constant ERC721A_STORAGE_POSITION = keccak256("erc721a.facet.storage");
+    bytes32 constant ERC721A_STORAGE_POSITION =
+        keccak256("erc721a.facet.storage");
 
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     // Compiler will pack this into a single 256bit word.
     struct TokenOwnership {
@@ -75,7 +80,11 @@ library ERC721ALib {
         mapping(address => mapping(address => bool)) _operatorApprovals;
     }
 
-    function erc721AStorage() internal pure returns (ERC721AStorage storage es) {
+    function erc721AStorage()
+        internal
+        pure
+        returns (ERC721AStorage storage es)
+    {
         bytes32 position = ERC721A_STORAGE_POSITION;
         assembly {
             es.slot := position
@@ -126,7 +135,12 @@ library ERC721ALib {
         if (to == address(0)) revert MintToZeroAddress();
         if (quantity == 0) revert MintZeroQuantity();
 
-        TransferHooksLib.beforeTokenTransfers(address(0), to, startTokenId, quantity);
+        TransferHooksLib.beforeTokenTransfers(
+            address(0),
+            to,
+            startTokenId,
+            quantity
+        );
 
         // Overflows are incredibly unrealistic.
         // balance or numberMinted overflow if current value of either + quantity > 1.8e19 (2**64) - 1
@@ -136,7 +150,9 @@ library ERC721ALib {
             s._addressData[to].numberMinted += uint64(quantity);
 
             s._ownerships[startTokenId].addr = to;
-            s._ownerships[startTokenId].startTimestamp = uint64(block.timestamp);
+            s._ownerships[startTokenId].startTimestamp = uint64(
+                block.timestamp
+            );
 
             uint256 updatedIndex = startTokenId;
             uint256 end = updatedIndex + quantity;
@@ -144,7 +160,14 @@ library ERC721ALib {
             if (safe && to.isContract()) {
                 do {
                     emit Transfer(address(0), to, updatedIndex);
-                    if (!_checkContractOnERC721Received(address(0), to, updatedIndex++, _data)) {
+                    if (
+                        !_checkContractOnERC721Received(
+                            address(0),
+                            to,
+                            updatedIndex++,
+                            _data
+                        )
+                    ) {
                         revert TransferToNonERC721ReceiverImplementer();
                     }
                 } while (updatedIndex != end);
@@ -157,7 +180,12 @@ library ERC721ALib {
             }
             s._currentIndex = updatedIndex;
         }
-        TransferHooksLib.afterTokenTransfers(address(0), to, startTokenId, quantity);
+        TransferHooksLib.afterTokenTransfers(
+            address(0),
+            to,
+            startTokenId,
+            quantity
+        );
     }
 
     /**
@@ -175,7 +203,14 @@ library ERC721ALib {
         uint256 tokenId,
         bytes memory _data
     ) internal returns (bool) {
-        try IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, _data) returns (bytes4 retval) {
+        try
+            IERC721Receiver(to).onERC721Received(
+                msg.sender,
+                from,
+                tokenId,
+                _data
+            )
+        returns (bytes4 retval) {
             return retval == IERC721Receiver(to).onERC721Received.selector;
         } catch (bytes memory reason) {
             if (reason.length == 0) {
@@ -188,16 +223,19 @@ library ERC721ALib {
         }
     }
 
-    function totalSupply() internal view returns (uint256) {
-        ERC721AStorage storage s = ERC721ALib.erc721AStorage();
-        // Counter underflow is impossible as _burnCounter cannot be incremented
-        // more than _currentIndex - _startTokenId() times
-        unchecked {
-            return s._currentIndex - s._burnCounter - _startTokenId();
-        }
-    }
-
     function _startTokenId() internal view returns (uint256) {
         return erc721AStorage()._startIndex;
+    }
+
+    function currentIndex() internal view returns (uint256) {
+        return erc721AStorage()._currentIndex;
+    }
+
+    function totalMinted() internal view returns (uint256) {
+        // Counter underflow is impossible as _currentIndex does not decrement,
+        // and it is initialized to ERC721ALib._startTokenId()
+        unchecked {
+            return erc721AStorage()._currentIndex - _startTokenId();
+        }
     }
 }

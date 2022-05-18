@@ -33,7 +33,7 @@ library URIStorageLib {
         return uriStorage()._tokenURIs[tokenId];
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal {
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) internal {
         URIStorage storage s = uriStorage();
         require(!s.metadataLocked, "Cannot update token URI, metadata locked");
         s._tokenURIs[tokenId] = _tokenURI;
@@ -52,6 +52,9 @@ library URIStorageLib {
 
         // check first for URIStorage
         // then fall back on baseURI + tokenId
+        // this allows admins to set a folder for the tokens
+        // but also update individual tokens i.e. for 1:1s
+        // within a larger collection
         return
             bytes(individualTokenUri).length != 0
                 ? individualTokenUri

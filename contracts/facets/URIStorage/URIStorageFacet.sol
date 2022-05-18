@@ -9,7 +9,7 @@ contract URIStorageFacet is AccessControlModifiers {
         external
         onlyOperator
     {
-        URIStorageLib._setTokenURI(tokenId, _tokenURI);
+        URIStorageLib.setTokenURI(tokenId, _tokenURI);
     }
 
     function setBaseURI(string memory _baseURI) public onlyOperator {

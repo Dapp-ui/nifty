@@ -8,7 +8,7 @@ export type Network =
 
 export enum SaleState {
   CLOSED = 0,
-  OPEN = 1,
+  PUBLIC = 1,
   ALLOW_LIST = 2,
   DUTCH_AUCTION = 3,
   SOLD_OUT = 4,
