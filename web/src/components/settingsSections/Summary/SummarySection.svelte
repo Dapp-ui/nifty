@@ -1,9 +1,30 @@
 <script lang="ts">
 	import { primaryColor } from '../../../globalStyles';
-
 	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
+	import Nifty from '../../../../../embed/Nifty';
+	import walletConnector from '../../../../../embed/svelte/walletConnectorInstance';
 
-	const handleClick = () => {};
+	export let contractAddress: string;
+	let name: string;
+	let symbol: string;
+	let startToken: number;
+	const nifty = new Nifty('rinkeby', contractAddress, walletConnector);
+
+	const handleClick = async () => {
+		await nifty.baseNFTFacet.setTokenMeta(name, symbol, startToken);
+	};
+
+	const onNameChange = (e: any) => {
+		name = e.target.value;
+	};
+
+	const onSymbolChange = (e: any) => {
+		symbol = e.target.value;
+	};
+
+	const onStartTokenChange = (e: any) => {
+		startToken = e.target.value;
+	};
 
 	const todoAscii = `
  _____          _       
@@ -37,11 +58,11 @@ source. NOT right now tho :)
 			</div>
 		</div>
 		<h2>Name</h2>
-		<input type="text" class="nameInput" placeholder="Cool NFT" />
+		<input type="text" class="nameInput" placeholder="Cool NFT" on:input={onNameChange} />
 		<h2>Symbol</h2>
-		<input type="text" class="nameInput" placeholder="COOL" />
+		<input type="text" class="nameInput" placeholder="COOL" on:input={onSymbolChange} />
 		<h2>Start Token</h2>
-		<input type="number" class="nameInput" placeholder="0" />
+		<input type="number" class="nameInput" placeholder="0" on:input={onStartTokenChange} />
 	</div>
 </div>
 

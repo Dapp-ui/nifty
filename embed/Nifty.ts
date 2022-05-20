@@ -26,7 +26,7 @@ class Nifty {
 
   // Facets!!!
   public diamondCloneFacet: BaseDiamondCloneFacet;
-  private baseNFTFacet: BaseNFTFacet;
+  public baseNFTFacet: BaseNFTFacet;
   public paymentSplitterFacet: PaymentSplitterFacet;
   public lazyMintFacet: LazyMintFacet;
 
@@ -100,6 +100,8 @@ class Nifty {
     ) as BaseDiamondCloneFacet;
 
     const facetAddresses = await this.diamondCloneFacet.facetAddresses();
+
+    console.log('FACET ADDRESSES!!!', facetAddresses);
 
     for (let facetAddress of facetAddresses) {
       this._initFacet(facetAddress);

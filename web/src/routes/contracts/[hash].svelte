@@ -16,11 +16,11 @@
 	<h1>{shortenAddress(hash)}</h1>
 	<SettingsMenu {onSelectedMenuChange} />
 	{#if selectedMenuId === 'summary'}
-		<OverviewSection />
+		<OverviewSection contractAddress={hash} />
 	{:else if selectedMenuId === 'tokens'}
 		<TokenMintSection contractAddress={hash} />
 	{:else if selectedMenuId === 'add-ons'}
-		<AddOnsSection />
+		<AddOnsSection contractAddress={hash} />
 	{/if}
 </main>
 

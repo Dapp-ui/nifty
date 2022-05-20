@@ -43,6 +43,7 @@
 	];
 
 	let currDescriptionIndex = 0;
+	export let contractAddress: string;
 
 	$: descriptionItem = addons[currDescriptionIndex];
 
