@@ -33,7 +33,7 @@ class Nifty {
   constructor(
     network: Network,
     contractAddress: string,
-    walletConnector: WalletConnector,
+    walletConnector?: WalletConnector,
     provider: ethers.providers.Provider = null
   ) {
     // running in the browser
@@ -100,8 +100,6 @@ class Nifty {
     ) as BaseDiamondCloneFacet;
 
     const facetAddresses = await this.diamondCloneFacet.facetAddresses();
-
-    console.log('FACET ADDRESSES!!!', facetAddresses);
 
     for (let facetAddress of facetAddresses) {
       this._initFacet(facetAddress);

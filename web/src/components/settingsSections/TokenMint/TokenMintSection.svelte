@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { primaryColor } from '../../../globalStyles';
 
-	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
 	import TokenAttributeCreator from './TokenAttributeCreator.svelte';
 	import compileMeta from '../../../utils/compileMeta';
 	import Nifty from '../../../../../embed/Nifty';
 	import walletConnector from '../../../../../embed/svelte/walletConnectorInstance';
+	import LoaderButton from '../../../../../embed/svelte/parts/LoaderButton.svelte';
 
+	let isLoading = false;
 	let imgSrc = '';
 	let ipfsImage = '';
 	let name = '';
@@ -50,6 +51,8 @@
 			throw new Error('No Image Or Maybe Still Uploading');
 		}
 
+		isLoading = true;
+
 		// upload the metadata
 		const metaBlob = compileMeta(name, description, ipfsImage, attributes);
 
@@ -67,7 +70,8 @@
 		}
 
 		const mintTxn = await niftyInstance.devMint(address, 1, `ipfs://${cid}`);
-		console.log('THE MINT TXN', mintTxn);
+		await mintTxn.wait();
+		isLoading = false;
 	};
 </script>
 
@@ -100,12 +104,14 @@
 	</div>
 </div>
 
-<GenericButton
+<LoaderButton
 	title="Mint NFT"
 	handleClick={onMint}
 	width={200}
 	height={50}
-	backgroundColor={primaryColor}
+	loadingText={'Minting...'}
+	borderColor={primaryColor}
+	{isLoading}
 />
 
 <style>

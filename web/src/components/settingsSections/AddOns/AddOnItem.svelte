@@ -5,13 +5,16 @@
 	export let onHover: (index: number) => void;
 	export let selected: boolean;
 	export let index: number;
+	export let comingSoon: boolean = false;
 
-	const handleToggle = () => toggleItem(index);
+	const handleToggle = () => {
+		if (!comingSoon) toggleItem(index);
+	};
 	const handleHover = () => onHover(index);
 </script>
 
 <div
-	class={selected ? 'addOnItem selected' : 'addOnItem'}
+	class={`${selected ? 'addOnItem selected' : 'addOnItem'} ${comingSoon && 'comingSoon'}`}
 	on:click={handleToggle}
 	on:mouseenter={handleHover}
 >
@@ -41,7 +44,8 @@
 		</svg>
 	</div>
 	<div class="icon">{icon}</div>
-	<h3>{name}</h3>
+	<h3 class={comingSoon ? 'hoverHide' : ''}>{name}</h3>
+	<h3 class={comingSoon ? 'hoverShow' : 'hidden'}>Coming Soon!</h3>
 </div>
 
 <style>
@@ -58,6 +62,26 @@
 		text-align: center;
 		height: 200px;
 		user-select: none;
+	}
+
+	.comingSoon {
+		cursor: not-allowed;
+	}
+
+	.addOnItem:hover > .hoverHide {
+		display: none;
+	}
+
+	.hoverShow {
+		display: none;
+	}
+
+	.addOnItem:hover > .hoverShow {
+		display: flex;
+	}
+
+	.hidden {
+		display: none;
 	}
 
 	.check {

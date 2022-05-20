@@ -1,8 +1,13 @@
 import lazyMintFacet from '../../artifacts/contracts/facets/LazyMint/LazyMintFacet.sol/LazyMintFacet.json';
+import baseDiamondFacet from '../../artifacts/contracts/facets/DiamondClone/BaseDiamondCloneFacet.sol/BaseDiamondCloneFacet.json';
 import paymentSplitterFacet from '../../artifacts/contracts/facets/PaymentSplitter/PaymentSplitterFacet.sol/PaymentSplitterFacet.json';
 import baseNFTFacet from '../../artifacts/contracts/facets/BaseNFTFacet.sol/BaseNFTFacet.json';
 
 const facetAddressMap = {
+  '0x3fcc7cda97fcb816a3261d8d064574bae6f79878': {
+    abi: baseDiamondFacet.abi,
+    type: 'base-diamond',
+  },
   '0x91e15d89e13801a46f8b3a8396f394ffa73502f5': {
     abi: baseNFTFacet.abi,
     type: 'base-nft',
@@ -16,5 +21,15 @@ const facetAddressMap = {
     type: 'lazy-mint',
   },
 };
+
+export const idToFacetAddress: { [key: string]: string } = Object.keys(
+  facetAddressMap
+).reduce((acc, key) => {
+  const id = facetAddressMap[key].type;
+  return {
+    ...acc,
+    [id]: key,
+  };
+}, {});
 
 export default facetAddressMap;

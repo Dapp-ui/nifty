@@ -1,17 +1,21 @@
 <script lang="ts">
-	import { primaryColor } from '../../../globalStyles';
-	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
 	import Nifty from '../../../../../embed/Nifty';
 	import walletConnector from '../../../../../embed/svelte/walletConnectorInstance';
+	import LoaderButton from '../../../../../embed/svelte/parts/LoaderButton.svelte';
 
 	export let contractAddress: string;
+
 	let name: string;
 	let symbol: string;
 	let startToken: number;
+	let isLoading = false;
 	const nifty = new Nifty('rinkeby', contractAddress, walletConnector);
 
 	const handleClick = async () => {
-		await nifty.baseNFTFacet.setTokenMeta(name, symbol, startToken);
+		isLoading = true;
+		const tx = await nifty.baseNFTFacet.setTokenMeta(name, symbol, startToken);
+		await tx.wait();
+		isLoading = false;
 	};
 
 	const onNameChange = (e: any) => {
@@ -66,12 +70,13 @@ source. NOT right now tho :)
 	</div>
 </div>
 
-<GenericButton
+<LoaderButton
 	title="Update Contract"
 	{handleClick}
 	width={200}
-	height={50}
-	backgroundColor={primaryColor}
+	borderColor="#1f271b"
+	loadingText={'Updating...'}
+	{isLoading}
 />
 
 <style>

@@ -1,15 +1,15 @@
-/* global ethers */
+import { ethers } from 'ethers';
 
 const FacetCutAction = { Add: 0, Replace: 1, Remove: 2 };
 
-const deployTest1Facet = async () => {
-  const Test1Facet = await ethers.getContractFactory("Test1Facet");
+export const deployTest1Facet = async () => {
+  const Test1Facet = await ethers.getContractFactory('Test1Facet');
   const test1Facet = await Test1Facet.deploy();
   await test1Facet.deployed();
   return test1Facet;
 };
 
-const getDecodedEventsFromContract = async (contractInstance) => {
+export const getDecodedEventsFromContract = async (contractInstance) => {
   const events = await contractInstance.queryFilter(
     { address: contractInstance.address },
     0,
@@ -35,10 +35,10 @@ const getDecodedEventsFromContract = async (contractInstance) => {
 };
 
 // get function selectors from ABI
-function getSelectors(contract) {
+export function getSelectors(contract) {
   const signatures = Object.keys(contract.interface.functions);
   const selectors = signatures.reduce((acc, val) => {
-    if (val !== "init(bytes)") {
+    if (val !== 'init(bytes)') {
       acc.push(contract.interface.getSighash(val));
     }
     return acc;
@@ -50,14 +50,14 @@ function getSelectors(contract) {
 }
 
 // get function selector from function signature
-function getSelector(func) {
+export function getSelector(func) {
   const abiInterface = new ethers.utils.Interface([func]);
   return abiInterface.getSighash(ethers.utils.Fragment.from(func));
 }
 
 // used with getSelectors to remove selectors from an array of selectors
 // functionNames argument is an array of function signatures
-function remove(functionNames) {
+export function remove(functionNames) {
   const selectors = this.filter((v) => {
     for (const functionName of functionNames) {
       if (v === this.contract.interface.getSighash(functionName)) {
@@ -90,9 +90,9 @@ function get(functionNames) {
 }
 
 // remove selectors using an array of signatures
-function removeSelectors(selectors, signatures) {
+export function removeSelectors(selectors, signatures) {
   const iface = new ethers.utils.Interface(
-    signatures.map((v) => "function " + v)
+    signatures.map((v) => 'function ' + v)
   );
   const removeSelectors = signatures.map((v) => iface.getSighash(v));
   selectors = selectors.filter((v) => !removeSelectors.includes(v));
@@ -100,7 +100,7 @@ function removeSelectors(selectors, signatures) {
 }
 
 // find a particular address position in the return value of diamondLoupeFacet.facets()
-function findAddressPositionInFacets(facetAddress, facets) {
+export function findAddressPositionInFacets(facetAddress, facets) {
   for (let i = 0; i < facets.length; i++) {
     if (facets[i].facetAddress === facetAddress) {
       return i;
@@ -108,12 +108,4 @@ function findAddressPositionInFacets(facetAddress, facets) {
   }
 }
 
-exports.getSelectors = getSelectors;
-exports.getSelector = getSelector;
-exports.FacetCutAction = FacetCutAction;
-exports.remove = remove;
-exports.removeSelectors = removeSelectors;
-exports.findAddressPositionInFacets = findAddressPositionInFacets;
-
-exports.deployTest1Facet = deployTest1Facet;
-exports.getDecodedEventsFromContract = getDecodedEventsFromContract;
+export default {};

@@ -1,27 +1,13 @@
 <script lang="ts">
-	import SettingsMenuItem from './SettingsMenuItem.svelte';
+	import type { MenuItem } from './settingsMenu';
 
-	const menuItems = [
-		{
-			name: 'Summary',
-			icon: '⚙',
-			id: 'summary'
-		},
-		{
-			name: 'Tokens',
-			icon: '᯽',
-			id: 'tokens'
-		},
-		{
-			name: 'Add Ons',
-			icon: '+',
-			id: 'add-ons'
-		}
-	];
+	import SettingsMenuItem from './SettingsMenuItem.svelte';
 
 	export let onSelectedMenuChange: (id: string) => void;
 
-	let selectedIndex = 1;
+	export let menuItems: MenuItem[];
+
+	let selectedIndex = 0;
 	let marginLeft = 0;
 	$: marginLeft = (selectedIndex * 100) / menuItems.length;
 

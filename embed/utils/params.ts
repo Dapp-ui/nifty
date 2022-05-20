@@ -14,7 +14,7 @@ const defaultParams: NiftyParams = {
   mintButtonSelector: '#mintButton',
   connectButtonSelector: '#connectWalletButton',
   mintButtonCustomStyles: '',
-  connectWalletButtonCustomStyles: '',
+  connectWalletButtonCustomStyles: 'background-color: #1f271b',
 };
 
 const paramsFromWindow = Object.keys(defaultParams).reduce((acc, key) => {
