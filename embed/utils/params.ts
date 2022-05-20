@@ -2,7 +2,7 @@ import type { Network } from '../types';
 
 export interface NiftyParams {
   network: Network;
-  contractAddress: string;
+  contractAddress?: string;
   mintButtonSelector: string;
   connectButtonSelector: string;
   mintButtonCustomStyles: string;
@@ -11,7 +11,6 @@ export interface NiftyParams {
 
 const defaultParams: NiftyParams = {
   network: 'rinkeby',
-  contractAddress: '0x5B357E8178683c487b378c06Ad533bbbb4f938C6',
   mintButtonSelector: '#mintButton',
   connectButtonSelector: '#connectWalletButton',
   mintButtonCustomStyles: '',

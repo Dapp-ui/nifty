@@ -2,11 +2,11 @@
   import WalletChooserTile from './WalletChooserTile.svelte';
   import shortenAddress from '../utils/shortenAddress';
   import { getContext } from 'svelte';
-  import nifty from './niftyInstance';
   import type { WalletType } from '../WalletConnector';
   import connectedAddressStore from './stores/connectedAddress';
   import { parseWalletConnectError } from '../utils/errorHandlers';
   import errMessage from './stores/errorMessage';
+  import walletConnectorInstance from './walletConnectorInstance';
 
   let loadingWalletId = '';
   let connectedWalletAddress = '';
@@ -16,7 +16,7 @@
   const handleWalletChoose = async (id: WalletType) => {
     try {
       loadingWalletId = id;
-      const address = await nifty.connectWallet(id);
+      const address = await walletConnectorInstance.connectWallet(id);
       loadingWalletId = '';
       connectedWalletAddress = address;
       connectedAddressStore.set(address);

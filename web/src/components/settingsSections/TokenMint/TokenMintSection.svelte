@@ -4,14 +4,17 @@
 	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
 	import TokenAttributeCreator from './TokenAttributeCreator.svelte';
 	import compileMeta from '../../../utils/compileMeta';
-	import niftyInstance from '../../../../../embed/svelte/niftyInstance';
-	import nifty from '../../../../../embed/svelte/niftyInstance';
+	import Nifty from '../../../../../embed/Nifty';
+	import walletConnector from '../../../../../embed/svelte/walletConnectorInstance';
 
 	let imgSrc = '';
 	let ipfsImage = '';
 	let name = '';
 	let description = '';
 	let attributes: { name: string; value: string }[] = [];
+	export let contractAddress;
+
+	const niftyInstance = new Nifty('rinkeby', contractAddress, walletConnector);
 
 	const onNameChange = (e: any) => {
 		name = e.target.value;
@@ -56,12 +59,15 @@
 		});
 
 		const { cid } = await res.json();
+
 		const address = niftyInstance.getConnectedAddress();
+
 		if (!address) {
 			throw new Error('need to be connected');
 		}
 
-		niftyInstance.devMint(address, 1, `ipfs://${cid}`);
+		const mintTxn = await niftyInstance.devMint(address, 1, `ipfs://${cid}`);
+		console.log('THE MINT TXN', mintTxn);
 	};
 </script>
 

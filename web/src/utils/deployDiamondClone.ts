@@ -2,6 +2,7 @@ import { ethers, ContractFactory } from 'ethers';
 import niftyInstance from '../.././../embed/svelte/niftyInstance';
 import diamondCloneContract from '../../../artifacts/contracts/DiamondClone.sol/DiamondClone.json';
 import baseNFTFacetContract from '../../../artifacts/contracts/facets/BaseNFTFacet.sol/BaseNFTFacet.json';
+import walletConnectorInstance from '../../../embed/svelte/walletConnectorInstance';
 
 const maxFeePerGas = 5000000000;
 const maxPriorityFeePerGas = 3000000000;
@@ -12,7 +13,7 @@ async function deployDiamondClone(params: {
 	baseDiamondCloneFacetAddress: string;
 }): Promise<string> {
 	const { diamondSawAddress, baseNFTFacetAddress, baseDiamondCloneFacetAddress } = params;
-	const signer = niftyInstance.getSigner();
+	const signer = walletConnectorInstance.getSigner();
 	if (!signer) {
 		throw new Error('Wallet must be connected to create a contract');
 	}

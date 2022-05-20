@@ -18,7 +18,7 @@
 	{#if selectedMenuId === 'summary'}
 		<OverviewSection />
 	{:else if selectedMenuId === 'tokens'}
-		<TokenMintSection />
+		<TokenMintSection contractAddress={hash} />
 	{:else if selectedMenuId === 'add-ons'}
 		<AddOnsSection />
 	{/if}

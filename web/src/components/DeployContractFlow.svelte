@@ -8,9 +8,9 @@
 	const onClick = async () => {
 		isLoading = true;
 		const contractAddy = await deployDiamondClone({
-			diamondSawAddress: '0xAE713045508dC9b995a82C41F433bCacc62b0896',
-			baseDiamondCloneFacetAddress: '0x9E401ECaFDB2ad3D2A3e0cAc01dbc05177Af8bFc',
-			baseNFTFacetAddress: '0xACA83e6F8D762efc9D0bD774AA107DCcf586cEA4'
+			diamondSawAddress: '0x27c1A6417803bDac8958361d2Edf788F79bA94CC',
+			baseDiamondCloneFacetAddress: '0x3Fcc7CDa97FcB816a3261D8d064574BAE6f79878',
+			baseNFTFacetAddress: '0x91E15D89E13801A46f8B3a8396F394ffa73502f5'
 		});
 		isLoading = false;
 		window.open(`/contracts/${contractAddy}`, '_self');

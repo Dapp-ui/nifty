@@ -49,7 +49,7 @@ async function deployDiamond() {
 
   console.log(
     'Deploying the payment splitter with hash',
-    baseNFTFacet.deployTransaction.hash
+    paymentSplitterFacet.deployTransaction.hash
   );
 
   const LazyMintFacet = await ethers.getContractFactory('LazyMintFacet');

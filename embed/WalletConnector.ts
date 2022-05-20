@@ -17,9 +17,44 @@ class WalletConnector {
   private provider: ethers.providers.Provider;
   private signer: ethers.Signer;
   private connectedAddress: string | null;
+  private onConnectCallbacks: (() => void)[];
 
   constructor(network: Network) {
     this.network = network;
+    this.onConnectCallbacks = [];
+
+    this._attemptOptimisticConnect();
+  }
+
+  async _attemptOptimisticConnect() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const lastConnection = window.localStorage.getItem(
+      'last-nifty-connecttion'
+    );
+
+    if (!lastConnection) {
+      return;
+    }
+
+    const { walletType, address } = JSON.parse(lastConnection);
+
+    this.walletType = walletType;
+    const windowProvider = this._getProvider();
+
+    const writeProvider = new ethers.providers.Web3Provider(
+      windowProvider,
+      parseInt(chainIdFromNetwork(this.network))
+    );
+
+    // should not open metamask
+    const accounts = await writeProvider.listAccounts();
+
+    if (accounts.includes(address)) {
+      this.connectWallet(walletType);
+    }
   }
 
   _getCoinbaseProvider(): ethers.providers.ExternalProvider {
@@ -95,6 +130,15 @@ class WalletConnector {
 
     this.connectedAddress = await this.signer.getAddress();
 
+    window.localStorage.setItem(
+      'last-nifty-connecttion',
+      JSON.stringify({ walletType, address: this.connectedAddress })
+    );
+
+    for (let onConnectCallback of this.onConnectCallbacks) {
+      onConnectCallback();
+    }
+
     return this.connectedAddress;
   }
 
@@ -108,6 +152,10 @@ class WalletConnector {
 
   public getSigner(): ethers.Signer {
     return this.signer;
+  }
+
+  public addConnectListener(callback: () => void) {
+    this.onConnectCallbacks.push(callback);
   }
 }
 
