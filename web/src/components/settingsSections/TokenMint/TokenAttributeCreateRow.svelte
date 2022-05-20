@@ -2,12 +2,24 @@
 	import TokenAttributeVariableInput from './TokenAttributeVariableInput.svelte';
 
 	export let name: string = '';
-	export let value: string = '';
+	export let value: string | number = '';
+	export let index: number;
+	export let onChange: (index: number, name: string, value: string | number) => void;
+
+	const onNameChange = (e: any) => {
+		name = e.target.value;
+		onChange(index, name, value);
+	};
+
+	const onValueChange = (e: any) => {
+		value = e.target.value;
+		onChange(index, name, value);
+	};
 </script>
 
 <div class="attributeCreateRow">
-	<input class="nameInput" placeholder="Attribute Name" value={name} />
-	<TokenAttributeVariableInput {value} />
+	<input class="nameInput" placeholder="Attribute Name" value={name} on:input={onNameChange} />
+	<TokenAttributeVariableInput {value} onChange={onValueChange} />
 </div>
 
 <style>

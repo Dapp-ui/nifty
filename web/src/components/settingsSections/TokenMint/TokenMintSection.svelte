@@ -3,19 +3,65 @@
 
 	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
 	import TokenAttributeCreator from './TokenAttributeCreator.svelte';
-	const handleClick = () => {};
-	const autoResize = (e: any) => {
-		e.target.style.height = 'auto';
-		e.target.style.height = e.target.scrollHeight + 'px';
-	};
+	import compileMeta from '../../../utils/compileMeta';
+	import niftyInstance from '../../../../../embed/svelte/niftyInstance';
+	import nifty from '../../../../../embed/svelte/niftyInstance';
 
 	let imgSrc = '';
+	let ipfsImage = '';
+	let name = '';
+	let description = '';
+	let attributes: { name: string; value: string }[] = [];
 
-	const onImageSelect = (e: any) => {
+	const onNameChange = (e: any) => {
+		name = e.target.value;
+	};
+
+	const onDescriptionChange = (e: any) => {
+		e.target.style.height = 'auto';
+		e.target.style.height = e.target.scrollHeight + 'px';
+		description = e.target.value;
+	};
+
+	const onAttributesChange = (a: any) => {
+		attributes = a;
+	};
+
+	const onImageSelect = async (e: any) => {
 		const [file] = e.target.files;
 		if (file) {
 			imgSrc = URL.createObjectURL(file);
+
+			const res = await fetch('/files', {
+				method: 'POST',
+				body: file
+			});
+
+			const { cid } = await res.json();
+			ipfsImage = `ipfs://${cid}`;
 		}
+	};
+
+	const onMint = async () => {
+		if (!ipfsImage) {
+			throw new Error('No Image Or Maybe Still Uploading');
+		}
+
+		// upload the metadata
+		const metaBlob = compileMeta(name, description, ipfsImage, attributes);
+
+		const res = await fetch('/files', {
+			method: 'POST',
+			body: metaBlob
+		});
+
+		const { cid } = await res.json();
+		const address = niftyInstance.getConnectedAddress();
+		if (!address) {
+			throw new Error('need to be connected');
+		}
+
+		niftyInstance.devMint(address, 1, `ipfs://${cid}`);
 	};
 </script>
 
@@ -37,16 +83,20 @@
 	</div>
 	<div class="metaWrapper">
 		<h2>Name</h2>
-		<input type="text" class="nameInput" placeholder="Bored Ape #1" />
+		<input type="text" class="nameInput" placeholder="Bored Ape #1" on:input={onNameChange} />
 		<h2>Description</h2>
-		<textarea class="descriptionInput" placeholder="The first bored ape" on:input={autoResize} />
-		<TokenAttributeCreator />
+		<textarea
+			class="descriptionInput"
+			placeholder="The first bored ape"
+			on:input={onDescriptionChange}
+		/>
+		<TokenAttributeCreator {onAttributesChange} />
 	</div>
 </div>
 
 <GenericButton
 	title="Mint NFT"
-	{handleClick}
+	handleClick={onMint}
 	width={200}
 	height={50}
 	backgroundColor={primaryColor}
@@ -105,12 +155,12 @@
 		color: grey;
 	}
 
-	textarea {
-		border-bottom: 1px dashed lightgrey;
-	}
-
 	input::placeholder {
 		color: lightgrey;
+	}
+
+	textarea {
+		border-bottom: 1px dashed lightgrey;
 	}
 
 	textarea::placeholder {

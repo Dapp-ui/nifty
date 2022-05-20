@@ -11,6 +11,8 @@
 				type = 'number';
 		}
 	};
+
+	export let onChange: (e: any) => void;
 </script>
 
 <div class="variableInputWrapper">
@@ -19,6 +21,7 @@
 		{type}
 		placeholder={type === 'text' ? 'Text Value' : 'Numeric Value'}
 		{value}
+		on:input={onChange}
 	/>
 	<select name="cars" id="cars" on:input={onSelect}>
 		<option value="A"><i>A</i></option>

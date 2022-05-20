@@ -3,25 +3,30 @@
 
 	const menuItems = [
 		{
+			name: 'Summary',
+			icon: '⚙',
+			id: 'summary'
+		},
+		{
 			name: 'Tokens',
-			icon: '᯽'
+			icon: '᯽',
+			id: 'tokens'
 		},
 		{
 			name: 'Add Ons',
-			icon: '+'
-		},
-		{
-			name: 'Meta',
-			icon: '⚙'
+			icon: '+',
+			id: 'add-ons'
 		}
 	];
 
-	let selectedIndex = 0;
+	export let onSelectedMenuChange: (id: string) => void;
+
+	let selectedIndex = 1;
 	let marginLeft = 0;
 	$: marginLeft = (selectedIndex * 100) / menuItems.length;
 
 	const onSelect = (index: number) => {
-		console.log('on select just happened', index);
+		onSelectedMenuChange(menuItems[index].id);
 		selectedIndex = index;
 	};
 </script>
@@ -29,7 +34,7 @@
 <div class="slidemenuWrapper">
 	<div class="slidemenu" style="width: {menuItems.length * 120}px;">
 		{#each menuItems as menuItem, index}
-			<SettingsMenuItem {...menuItem} {index} {onSelect} />
+			<SettingsMenuItem {...menuItem} {index} {onSelect} {selectedIndex} />
 		{/each}
 		<div class="clear" />
 

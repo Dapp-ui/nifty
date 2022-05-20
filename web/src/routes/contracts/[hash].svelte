@@ -2,15 +2,26 @@
 	import SettingsMenu from '../../components/settingsMenu/SettingsMenu.svelte';
 	import shortenAddress from '../../../../embed/utils/shortenAddress';
 	import TokenMintSection from '../../components/settingsSections/TokenMint/TokenMintSection.svelte';
+	import OverviewSection from '../../components/settingsSections/Summary/SummarySection.svelte';
+	import AddOnsSection from '../../components/settingsSections/AddOns/AddOnsSection.svelte';
 
 	export let hash: string;
-	// export let selectedMenuItem
+	export let selectedMenuId = 'tokens';
+	const onSelectedMenuChange = (menuId: string) => {
+		selectedMenuId = menuId;
+	};
 </script>
 
 <main>
 	<h1>{shortenAddress(hash)}</h1>
-	<SettingsMenu />
-	<TokenMintSection />
+	<SettingsMenu {onSelectedMenuChange} />
+	{#if selectedMenuId === 'summary'}
+		<OverviewSection />
+	{:else if selectedMenuId === 'tokens'}
+		<TokenMintSection />
+	{:else if selectedMenuId === 'add-ons'}
+		<AddOnsSection />
+	{/if}
 </main>
 
 <style>

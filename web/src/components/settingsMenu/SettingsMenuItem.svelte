@@ -2,6 +2,7 @@
 	export let name: string;
 	export let icon: string;
 	export let index: number;
+	export let selectedIndex: number;
 	export let onSelect: (index: number) => void;
 
 	const handleSelect = () => {
@@ -16,7 +17,7 @@
 	name="menuItem"
 	class="slide-toggle"
 	id={`slide-item-${index}`}
-	checked={!index}
+	checked={index === selectedIndex}
 />
 <label for={`slide-item-${index}`} on:click={handleSelect}>
 	<p class="icon">{icon}</p>
