@@ -1,5 +1,4 @@
 import { ethers, ContractFactory } from 'ethers';
-import niftyInstance from '../.././../embed/svelte/niftyInstance';
 import diamondCloneContract from '../../../artifacts/contracts/DiamondClone.sol/DiamondClone.json';
 import baseNFTFacetContract from '../../../artifacts/contracts/facets/BaseNFTFacet.sol/BaseNFTFacet.json';
 import walletConnectorInstance from '../../../embed/svelte/walletConnectorInstance';

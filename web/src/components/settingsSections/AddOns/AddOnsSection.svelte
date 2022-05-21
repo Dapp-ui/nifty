@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { primaryColor } from '../../../globalStyles';
 
-	import GenericButton from '../../../../../embed/svelte/parts/GenericButton.svelte';
 	import AddOnItem from './AddOnItem.svelte';
 	import diamondCut from '../../../utils/diamondCut';
 	import { addons, addonsMap } from './addOns';
+	import LoaderButton from '../../../../../embed/svelte/parts/LoaderButton.svelte';
 
 	let currDescriptionIndex = 0;
+	let isLoading = false;
 	export let contractAddress: string;
 	export let onChange: () => void;
 
@@ -15,12 +16,14 @@
 	let selectedIds: { [key: string]: boolean } = {};
 
 	const handleClick = async () => {
+		isLoading = true;
 		const selectedAddonFacets = Object.keys(selectedIds)
 			.filter((key) => selectedIds[key])
 			.map((key) => addonsMap[key].facetAddress);
 
 		await diamondCut(contractAddress, selectedAddonFacets);
 		onChange();
+		isLoading = false;
 	};
 	const toggleItem = (index: number) => {
 		const id = addons[index].id;
@@ -48,12 +51,14 @@
 	{/each}
 </div>
 
-<GenericButton
+<LoaderButton
 	title="Update Add Ons"
 	{handleClick}
 	width={200}
 	height={50}
-	backgroundColor={primaryColor}
+	loadingText={'Updating...'}
+	borderColor={primaryColor}
+	{isLoading}
 />
 
 <style>

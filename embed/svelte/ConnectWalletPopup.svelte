@@ -3,7 +3,7 @@
   import ChooseWalletList from './ChooseWalletList.svelte';
 </script>
 
-<Popup header={'Choose Wallet'}>
+<Popup header={'Choose Wallet'} shrinkHr={true}>
   <div slot="content">
     <ChooseWalletList />
   </div>

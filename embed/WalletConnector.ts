@@ -3,7 +3,7 @@ import type { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers, Wallet } from 'ethers';
 import isWriteProvider from './utils/isWriteProvider';
 
-export type WalletType = 'metamask' | 'coinbase';
+export type WalletType = 'metamask' | 'coinbase' | 'wallet-connect';
 
 declare global {
   interface Window {
@@ -15,6 +15,7 @@ class WalletConnector {
   private network: Network;
   private walletType: WalletType;
   private provider: ethers.providers.Provider;
+  private walletConnectProvider: Wallet;
   private signer: ethers.Signer;
   private connectedAddress: string | null;
   private onConnectCallbacks: (() => void)[];
@@ -42,7 +43,7 @@ class WalletConnector {
     const { walletType, address } = JSON.parse(lastConnection);
 
     this.walletType = walletType;
-    const windowProvider = this._getProvider();
+    const windowProvider = await this._getProvider();
 
     const writeProvider = new ethers.providers.Web3Provider(
       windowProvider,
@@ -57,7 +58,7 @@ class WalletConnector {
     }
   }
 
-  _getCoinbaseProvider(): ethers.providers.ExternalProvider {
+  _getCoinbaseProvider(): ethers.providers.ExternalProvider | null {
     if (window.ethereum?.isCoinbaseWallet) {
       return window.ethereum;
     }
@@ -73,7 +74,7 @@ class WalletConnector {
     return null;
   }
 
-  _getMetaMaskProvider(): ethers.providers.ExternalProvider {
+  _getMetaMaskProvider(): ethers.providers.ExternalProvider | null {
     if (window.ethereum?.isMetaMask && !window.ethereum?.overrideIsMetaMask) {
       return window.ethereum;
     }
@@ -89,10 +90,32 @@ class WalletConnector {
     return null;
   }
 
-  _getProvider(): ethers.providers.ExternalProvider | null {
+  async _getWalletConnectProvider(): Promise<ethers.providers.ExternalProvider | null> {
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      const WalletConnectProvider = await import(
+        '@walletconnect/web3-provider/dist/umd/index.min.js'
+      );
+
+      // @ts-ignore
+      const provider = new WalletConnectProvider.default({
+        infuraId: 'a8846b8c3fdb46dea53be16c64411520',
+      });
+
+      provider.enable();
+
+      return provider as ethers.providers.ExternalProvider;
+    }
+
+    return null;
+  }
+
+  async _getProvider(): Promise<ethers.providers.ExternalProvider | null> {
     switch (this.walletType) {
       case 'coinbase':
         return this._getCoinbaseProvider();
+      case 'wallet-connect':
+        return this._getWalletConnectProvider();
       default:
         return this._getMetaMaskProvider();
     }
@@ -101,7 +124,7 @@ class WalletConnector {
   public async connectWallet(walletType: WalletType): Promise<string> {
     this.walletType = walletType;
 
-    const windowProvider = this._getProvider();
+    const windowProvider = await this._getProvider();
 
     if (!windowProvider) {
       throw new Error('No ethereum detected on web page');

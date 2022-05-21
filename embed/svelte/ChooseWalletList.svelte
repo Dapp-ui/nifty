@@ -46,6 +46,12 @@
       logoUrl:
         'https://storage.googleapis.com/niftyjs/wallet-logos/coinbaseV2.png',
     },
+    {
+      walletId: 'wallet-connect',
+      name: 'WalletConnect',
+      logoUrl:
+        'https://storage.googleapis.com/niftyjs/wallet-logos/walletConnectV2.png',
+    },
   ];
 </script>
 
@@ -92,12 +98,14 @@
   }
 
   .chooseWalletList {
+    margin-top: 17px;
     justify-content: space-around;
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 280px;
+    height: 330px;
     padding: 0px 20px;
+    flex-wrap: wrap;
   }
 
   .check {
