@@ -13,8 +13,8 @@
 				<h2>Choose Network</h2>
 				<select>
 					<option>Rinkeby Testnet</option>
-					<option>Arbitrum Rinkeby</option>
-					<option>Polygon Mumbai</option>
+					<option>Arbitrum Rinkeby (WIP)</option>
+					<option>Polygon Mumbai (WIP)</option>
 				</select>
 			</div>
 			<div class="horzHalf right">
