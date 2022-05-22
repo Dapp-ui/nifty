@@ -7,10 +7,11 @@
  / / | (_) | (_| | (_) |
  \\/   \\___/ \\__,_|\\___/ 
 
- In the future you can get 
- a script here to embed a 
- minting experience 
- in your website.
+ In the future you can 
+ upload token metadata in 
+ bulk via CSV here and the 
+ metadata BaseURI will be 
+ set accordingly
 
 
 
@@ -22,8 +23,9 @@
     {todoAscii}
   </pre>
 	<span
-		>For now, feel free to reach out in <a href={`https://discord.gg/tA3STyuV`}>discord</a> and we can
-		get you an embed script for your contract</span
+		>Before this UI is implemented, feel free to interact with the contract directly on <a
+			href={`https://louper.dev/diamond/${contractAddress}?network=rinkeby`}>louper</a
+		>.</span
 	>
 </div>
 

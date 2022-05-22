@@ -9,6 +9,7 @@
 	import EmbedSection from '../../components/settingsSections/Embed/EmbedSection.svelte';
 	import PaymentSplitterSection from '../../components/settingsSections/PaymentSplitter/PaymentSplitterSection.svelte';
 	import Modal from 'svelte-simple-modal';
+	import ImportSection from '../../components/settingsSections/Import/ImportSection.svelte';
 
 	export let hash: string;
 	export let selectedMenuId = 'summary';
@@ -41,9 +42,11 @@
 	{:else if selectedMenuId === 'add-ons'}
 		<AddOnsSection contractAddress={hash} onChange={onAddOnsUpdated} />
 	{:else if selectedMenuId === 'payment-splitter'}
-		<PaymentSplitterSection />
+		<PaymentSplitterSection contractAddress={hash} />
 	{:else if selectedMenuId === 'embed'}
-		<EmbedSection />
+		<EmbedSection contractAddress={hash} />
+	{:else if selectedMenuId === 'import'}
+		<ImportSection contractAddress={hash} />
 	{/if}
 </main>
 

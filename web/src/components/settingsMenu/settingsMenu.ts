@@ -35,6 +35,11 @@ const otherMenuItemsByFacetAddress = {
 	],
 	[idToFacetAddress['lazy-mint']]: [
 		{
+			name: 'Import',
+			icon: '☷',
+			id: 'import'
+		},
+		{
 			name: 'Embed',
 			icon: '⏣',
 			id: 'embed'
