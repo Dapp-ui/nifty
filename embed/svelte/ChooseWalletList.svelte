@@ -25,6 +25,7 @@
         close();
       }, 2000);
     } catch (e) {
+      console.log('AN ERROR OCCURED!!!', e);
       loadingWalletId = '';
       close();
 

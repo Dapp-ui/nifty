@@ -6,7 +6,6 @@
 	export let onSelect: (index: number) => void;
 
 	const handleSelect = () => {
-		console.log('HANDLING SELECT!!');
 		onSelect(index);
 	};
 </script>

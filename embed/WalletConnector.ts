@@ -3,6 +3,8 @@ import type { CurrencyUnit, Network, SaleState } from './types';
 import { BigNumber, ethers, Wallet } from 'ethers';
 import isWriteProvider from './utils/isWriteProvider';
 
+import type WalletConnectProviderType from '@walletconnect/web3-provider';
+
 export type WalletType = 'metamask' | 'coinbase' | 'wallet-connect';
 
 declare global {
@@ -15,7 +17,6 @@ class WalletConnector {
   private network: Network;
   private walletType: WalletType;
   private provider: ethers.providers.Provider;
-  private walletConnectProvider: Wallet;
   private signer: ethers.Signer;
   private connectedAddress: string | null;
   private onConnectCallbacks: (() => void)[];
@@ -50,8 +51,10 @@ class WalletConnector {
       parseInt(chainIdFromNetwork(this.network))
     );
 
-    // should not open metamask
-    const accounts = await writeProvider.listAccounts();
+    const accounts =
+      walletType === 'wallet-connect'
+        ? (windowProvider as WalletConnectProviderType).accounts
+        : await writeProvider.listAccounts();
 
     if (accounts.includes(address)) {
       this.connectWallet(walletType);
@@ -100,9 +103,7 @@ class WalletConnector {
       // @ts-ignore
       const provider = new WalletConnectProvider.default({
         infuraId: 'a8846b8c3fdb46dea53be16c64411520',
-      });
-
-      provider.enable();
+      }) as WalletConnectProviderType;
 
       return provider as ethers.providers.ExternalProvider;
     }
@@ -135,7 +136,11 @@ class WalletConnector {
       parseInt(chainIdFromNetwork(this.network))
     );
 
-    await writeProvider.send('eth_requestAccounts', []);
+    if (this.walletType !== 'wallet-connect') {
+      await writeProvider.send('eth_requestAccounts', []);
+    } else {
+      await (windowProvider as unknown as WalletConnectProviderType).enable();
+    }
 
     await writeProvider.send('wallet_switchEthereumChain', [
       { chainId: chainIdFromNetwork(this.network) },

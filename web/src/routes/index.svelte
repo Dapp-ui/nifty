@@ -28,7 +28,7 @@
 							<InlineImageItem imgUrl="/images/test.jpg" />
 						</div>
 						<br class="mobileShown" />
-						We&nbsp;Help&nbsp;Creators Sell&nbsp;NFTs<br class="mobileHidden" />
+						We&nbsp;Help&nbsp;Creators Sell&nbsp;Tokens<br class="mobileHidden" />
 						<span class="lowerMobile">On</span> their
 						<u>Own</u>
 						Website and Contract.<br /><br class="mobileShown" />

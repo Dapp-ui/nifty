@@ -13,8 +13,6 @@ const compileMeta = (name: string, description: string, image: string, attribute
 
 	const str = JSON.stringify(obj);
 
-	console.log('THE FINAL META', str);
-
 	var blob = new Blob([str], { type: 'application/json' });
 
 	return blob;

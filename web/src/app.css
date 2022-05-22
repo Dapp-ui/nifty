@@ -39,3 +39,26 @@ button {
 html.wf-loading * {
   opacity: 0;
 }
+
+main {
+  box-sizing: border-box;
+}
+
+hr {
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+.bgBlur {
+  backdrop-filter: blur(4px);
+}
+
+.window {
+  width: 500px !important;
+  height: 450px !important;
+}

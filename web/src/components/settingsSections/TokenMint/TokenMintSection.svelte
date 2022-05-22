@@ -6,6 +6,10 @@
 	import Nifty from '../../../../../embed/Nifty';
 	import walletConnector from '../../../../../embed/svelte/walletConnectorInstance';
 	import LoaderButton from '../../../../../embed/svelte/parts/LoaderButton.svelte';
+	import { getContext } from 'svelte';
+	import TokenMintSuccessPopup from './TokenMintSuccessPopup.svelte';
+
+	export let contractAddress: string;
 
 	let isLoading = false;
 	let imgSrc = '';
@@ -13,7 +17,7 @@
 	let name = '';
 	let description = '';
 	let attributes: { name: string; value: string }[] = [];
-	export let contractAddress;
+	const { open } = getContext('simple-modal');
 
 	const niftyInstance = new Nifty('rinkeby', contractAddress, walletConnector);
 
@@ -70,8 +74,24 @@
 		}
 
 		const mintTxn = await niftyInstance.devMint(address, 1, `ipfs://${cid}`);
-		await mintTxn.wait();
+		const res2 = await mintTxn.wait();
+
+		// @ts-ignore
+		const tokenId = res2.events[0].args.tokenId.toNumber();
+
 		isLoading = false;
+		imgSrc = '';
+		ipfsImage = '';
+		name = '';
+		description = '';
+		attributes = [];
+
+		// open the modal
+		open(TokenMintSuccessPopup, {
+			contractAddress,
+			tokenId,
+			metadataCid: cid
+		});
 	};
 </script>
 
@@ -118,6 +138,7 @@
 	.imagePreview {
 		width: 100%;
 		height: 100%;
+		border-right: 1px dashed lightgrey;
 	}
 
 	.fileWrapper {

@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import EmbedSection from '../../components/settingsSections/Embed/EmbedSection.svelte';
 	import PaymentSplitterSection from '../../components/settingsSections/PaymentSplitter/PaymentSplitterSection.svelte';
+	import Modal from 'svelte-simple-modal';
 
 	export let hash: string;
 	export let selectedMenuId = 'summary';
@@ -27,12 +28,16 @@
 </script>
 
 <main>
-	<h1>{shortenAddress(hash)}</h1>
+	<a href={`https://louper.dev/diamond/${hash}?network=rinkeby`} target="_blank"
+		><h1>{shortenAddress(hash)}</h1></a
+	>
 	<SettingsMenu {onSelectedMenuChange} {menuItems} />
 	{#if selectedMenuId === 'summary'}
 		<OverviewSection contractAddress={hash} />
 	{:else if selectedMenuId === 'tokens'}
-		<TokenMintSection contractAddress={hash} />
+		<Modal classBg="bgBlur">
+			<TokenMintSection contractAddress={hash} />
+		</Modal>
 	{:else if selectedMenuId === 'add-ons'}
 		<AddOnsSection contractAddress={hash} onChange={onAddOnsUpdated} />
 	{:else if selectedMenuId === 'payment-splitter'}
@@ -55,5 +60,10 @@
 	h1 {
 		margin-top: 0px;
 		font-size: 25px;
+	}
+
+	a {
+		color: #1f271b;
+		text-decoration: none;
 	}
 </style>
