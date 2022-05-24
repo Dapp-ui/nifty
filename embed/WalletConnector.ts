@@ -16,7 +16,7 @@ declare global {
 class WalletConnector {
   private network: Network;
   private walletType: WalletType;
-  private provider: ethers.providers.Provider;
+  private provider: ethers.providers.Web3Provider;
   private signer: ethers.Signer;
   private connectedAddress: string | null;
   private onConnectCallbacks: (() => void)[];
@@ -41,14 +41,14 @@ class WalletConnector {
       return;
     }
 
-    const { walletType, address } = JSON.parse(lastConnection);
+    const { walletType, address, network } = JSON.parse(lastConnection);
 
     this.walletType = walletType;
     const windowProvider = await this._getProvider();
 
     const writeProvider = new ethers.providers.Web3Provider(
       windowProvider,
-      parseInt(chainIdFromNetwork(this.network))
+      'any'
     );
 
     const accounts =
@@ -56,7 +56,7 @@ class WalletConnector {
         ? (windowProvider as WalletConnectProviderType).accounts
         : await writeProvider.listAccounts();
 
-    if (accounts.includes(address)) {
+    if (accounts.includes(address) && this.network === network) {
       this.connectWallet(walletType);
     }
   }
@@ -122,6 +122,24 @@ class WalletConnector {
     }
   }
 
+  private _onAccountChange() {
+    console.log('ACCOUNT CHANGED!');
+  }
+
+  private _onChainChange() {
+    console.log('CHAIN CHAINGED!');
+  }
+
+  private _onDisconnect() {
+    console.log('DISCONNECTED!');
+  }
+
+  public _setProviderListeners() {
+    this.provider.addListener('accountsChanged', this._onAccountChange);
+    this.provider.addListener('chainChanged', this._onChainChange);
+    this.provider.addListener('disconnect', this._onDisconnect);
+  }
+
   public async connectWallet(walletType: WalletType): Promise<string> {
     this.walletType = walletType;
 
@@ -133,7 +151,7 @@ class WalletConnector {
 
     const writeProvider = new ethers.providers.Web3Provider(
       windowProvider,
-      parseInt(chainIdFromNetwork(this.network))
+      'any'
     );
 
     if (this.walletType !== 'wallet-connect') {
@@ -146,7 +164,12 @@ class WalletConnector {
       { chainId: chainIdFromNetwork(this.network) },
     ]);
 
+    if (this.provider) {
+      this.provider.removeAllListeners();
+    }
+
     this.provider = writeProvider;
+    this._setProviderListeners();
 
     if (!isWriteProvider(writeProvider)) {
       throw new Error(
@@ -160,7 +183,11 @@ class WalletConnector {
 
     window.localStorage.setItem(
       'last-nifty-connecttion',
-      JSON.stringify({ walletType, address: this.connectedAddress })
+      JSON.stringify({
+        walletType,
+        address: this.connectedAddress,
+        network: this.network,
+      })
     );
 
     for (let onConnectCallback of this.onConnectCallbacks) {
@@ -184,6 +211,13 @@ class WalletConnector {
 
   public addConnectListener(callback: () => void) {
     this.onConnectCallbacks.push(callback);
+  }
+
+  public async switchChain(newNetwork: Network) {
+    this.network = newNetwork;
+    await this.provider.send('wallet_switchEthereumChain', [
+      { chainId: chainIdFromNetwork(newNetwork) },
+    ]);
   }
 }
 
